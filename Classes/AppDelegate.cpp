@@ -120,19 +120,19 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	//	false
 	//);
 
-	//auto scene = GameScene::createScene(
-	//"giselle",
-	//"_s_a.bme",
-	//1,
-	//true
-	//);
-
 	auto scene = GameScene::createScene(
-		"bohemian",
-		"bohemian_7a.bme",
-		1,
-		true
+	"giselle",
+	"_s_h.bme",
+	2,
+	true
 	);
+
+	//auto scene = GameScene::createScene(
+	//	"bohemian",
+	//	"bohemian_7a.bme",
+	//	1,
+	//	true
+	//);
 
 	//auto scene = StartScene::createScene();
 
