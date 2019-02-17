@@ -150,6 +150,7 @@ private:
 	Label *label_time_music;							// 곡 진행 시간 표시 라벨
 	Label *label_speed;									// 현재 곡 배속 라벨
 	Label *label_bpm;									// 현재 곡 BPM 라벨
+	Label *label_bar;									// 현재 곡 Bar 라벨
 	Sprite *ui_sprite_background;						// 전체 배경 스프라이트
 	Sprite *note_sprite_background;						// 노트 배경 스프라이트
 	Sprite *keyPressed_sprite[10];						// 곡 눌렀을때 스프라이트

@@ -354,6 +354,17 @@ void StartScene::setLayerBasicLayer() {
 			CCLOG("load Background Texture2D : %d/%d", fCount++, fAllCount / 2);
 #endif
 
+			/*
+			
+				OpenCV 에서 비디오 프레임 색상은 BGR 을 사용한다.
+				Mat 을 Texture2D 로 전환하기 위해서 사용할 수 있는 포맷은
+				Texture2D::PixelFormat::RGB888 이다, (BGRA 만 존재하고 BGR 포맷은 지원하지 않는다.)
+				따라서 mat 타입의 BGR 포맷을 사전에 RGB 포맷으로 바꾼 후 Texture2D 로 생성해야 한다.
+			
+			*/
+			/* BGR 에서 RGB 컬러 변경 */
+			cv::cvtColor(video_frame, video_frame, CV_BGR2RGB);
+
 			/* 사전에 미리 캡쳐한 프레임들을 모두 texture 화 하여 벡터에 저장 */
 			Texture2D *tp_texture = new Texture2D();
 			tp_texture->initWithData(video_frame.data,
@@ -366,6 +377,8 @@ void StartScene::setLayerBasicLayer() {
 			video_capture >> video_frame;
 
 		}
+
+		
 		
 		/* 배경 스프라이트 초기화 및 세팅 */
 		background_sprite = Sprite::create();

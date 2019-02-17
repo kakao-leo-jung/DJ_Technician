@@ -425,7 +425,7 @@ void BMSParser::readBms(std::string dirs, std::string fileName, double &status_b
 			// ########################################
 #pragma endregion
 #pragma region :: WAV ÆÄ½Ì ¿µ¿ª
-			if (strncmp(ch, "#WAV", 4) == 0) {
+			else if (strncmp(ch, "#WAV", 4) == 0) {
 				idx = 7;
 				int wav_channel = getInstance()->getChannelNumber(ch, 4, getInstance()->WAV_PUNC);
 				str_wavFile[wav_channel] = getInstance()->readLineFromIndex(ch, idx);

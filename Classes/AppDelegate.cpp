@@ -113,28 +113,29 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	// create a scene. it's an autorelease object
 	//AudioEngine::play2d("bgm/intro_Masader.mp3", true, 0.4f);
 
+
 	//auto scene = GameScene::createScene(
 	//	"AltMirrorBell",
 	//	"AltMirroBell_N.bme",
-	//	3,
-	//	false
-	//);
-
-	auto scene = GameScene::createScene(
-	"giselle",
-	"_s_h.bme",
-	2,
-	true
-	);
-
-	//auto scene = GameScene::createScene(
-	//	"bohemian",
-	//	"bohemian_7a.bme",
 	//	1,
 	//	true
 	//);
 
-	//auto scene = StartScene::createScene();
+	//auto scene = GameScene::createScene(
+	//"giselle",
+	//"_s_h.bme",
+	//2,
+	//true
+	//);
+
+	//auto scene = GameScene::createScene(
+	//	"bohemian",
+	//	"bohemian_7h.bme",
+	//	1,
+	//	true
+	//);
+
+	auto scene = StartScene::createScene();
 
 	// run
 	director->runWithScene(scene);

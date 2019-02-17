@@ -200,7 +200,14 @@ void GameScene::enableKeySetting() {
 void GameScene::initData() {
 	
 	/* 마디 변경 채널은 미리 1(4/4 박자)로 초기화 해놓는다. */
-	memset(notes_barLength, 1.0f, sizeof(notes_barLength));
+	//memset(notes_barLength, 1.0f, sizeof(notes_barLength));
+	std::fill_n(notes_barLength, 1000, 1);
+	/* 마디 길이 제대로 저장? */
+	int i = 0;
+	while (i < 1000) {
+		CCLOG("Init_notes_barLength[%d] = %lf", i, notes_barLength[i]);
+		i++;
+	}
 
 	// 노트 생성
 	setNotes();
@@ -209,6 +216,7 @@ void GameScene::initData() {
 	label_time_music = Label::createWithSystemFont("music_time : 0", "consolas", 20);
 	label_speed = Label::createWithSystemFont("music_speed : " + std::to_string(status_speed), "consolas", 20);
 	label_bpm = Label::createWithSystemFont("music_bpm : " + std::to_string(status_bpm), "consolas", 20);
+	label_bar = Label::createWithSystemFont("music_bar : " + std::to_string(bar_iter_latest), "consolas", 20);
 
 	// 라벨 설정
 	label_time_music->setPosition(size_window.width / 2, size_window.height / 2);
@@ -219,6 +227,9 @@ void GameScene::initData() {
 
 	label_bpm->setPosition(size_window.width / 2, size_window.height / 2 - 40);
 	this->addChild(label_bpm);
+
+	label_bar->setPosition(size_window.width / 2, size_window.height / 2 - 60);
+	this->addChild(label_bar);
 
 	/* 레디 사운드 재생 */
 	SimpleAudioEngine::getInstance()->playEffect(SOUND_READY.c_str());
@@ -437,6 +448,16 @@ void GameScene::setNotes() {
 #pragma endregion
 
 #pragma region 마디 및 노트 세팅
+
+	/* 마디 길이 제대로 저장? */
+	i = 0;
+	while (i < 1000) {
+		if (notes_barLength[i] == 0) {
+			notes_barLength[i] = 1;
+		}
+		CCLOG("notes_barLength[%d] = %lf", i, notes_barLength[i]);
+		i++;
+	}
 
 	/* 노트 스프라이트 및 시간 세팅 */
 	sort(notes.begin(), notes.end());
@@ -670,6 +691,9 @@ void GameScene::tickOperate(float interval) {
 
 	/* 현재 BPM 나타내기 */
 	label_bpm->setString("music_bpm : " + std::to_string(status_bpm));
+
+	/* 현재 Bar 번호 나타내기 */
+	label_bar->setString("music_bar : " + std::to_string(bar_iter_latest - 1));
 
 	/* iterator 시작점 설정 */
 	std::vector<NOTE::Note>::iterator cur_note = note_iter_latest;
