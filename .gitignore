@@ -2,7 +2,7 @@
 # 맥,안드로이드,리눅스 플랫폼 제외
 cocos2d/
 fmod/
-openv/
+opencv/
 proj.ios_mac/
 proj.android/
 proj.linux
