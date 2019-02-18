@@ -948,7 +948,7 @@ void MusicSelectScene::startGame() {
 		musicHeaders[status_musicSelect].getValues(MusicHeader::DIR),
 		musicHeaders[status_musicSelect].getValues(MusicHeader::FILENAME),
 		1.0f,
-		true
+		false
 	);
 	Director::getInstance()->replaceScene(TransitionFade::create(0.5f, musicSelectScene));
 

@@ -272,7 +272,7 @@ void GameScene::setNotes() {
 	note_sprite_background = Sprite::createWithTexture(cache->getTextureForKey(UI_SPRITE_NOATEBACKGROUND));
 	note_sprite_background->setAnchorPoint(Point(0, 0));
 	note_sprite_background->setPosition(Point(0, 0));
-	note_sprite_background->setOpacity(100);
+	note_sprite_background->setOpacity(230);
 	layer_notes->addChild(note_sprite_background, ZORDER_NOTEBACKGROUND);
 
 #pragma endregion
