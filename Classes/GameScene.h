@@ -1,5 +1,6 @@
 #include "cocos2d.h"
 #include "BMSParser.h"
+#include "opencv2/opencv.hpp"
 #include <chrono>
 #include <fmod.hpp>
 
@@ -48,7 +49,10 @@ private:
 	int status_bpm_tick;								// 현재까지 BPM 울린 횟수
 	double status_next_tick_time;						// 다음 틱이 되어야 할 시간
 	std::chrono::system_clock::time_point time_start;	// 곡 시작 시간
+	std::chrono::system_clock::time_point bga_start;	// BGA 시작 시간
 	std::chrono::duration<double> time_music;			// 곡 진행 시간
+	std::chrono::duration<double> time_bga;				// BGA 진행 시간
+
 	std::vector<NOTE::Note>::iterator note_iter_latest;	// 가장 최신 노트
 	int bar_iter_latest;								// 가장 최신 마디번호
 	//--------------------------------------------------------------------------------
@@ -59,6 +63,7 @@ private:
 
 	*/
 	double currentTime;									// 곡의 현재 진행 시간
+	double currentTime_bga;								// 현재채널 bga 진행을 위한 시간
 	double yPosOffset;									// 스크롤 거리 측정
 	double prevTime;									// 이전 틱의 시간
 	int currentBarIdx;									// 곡의 현재 진행 마디
@@ -110,6 +115,20 @@ private:
 	int goodCount;										// good 개수
 	int badCount;										// bad 개수
 	int missCount;										// miss 개수
+	//--------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------
+	/*
+
+		영상 재생 관련 변수
+
+	*/
+	std::vector<Texture2D*> v_bga_bga[1296];			// BGA 텍스쳐 벡터(영상 각 프레임 텍스쳐를 보관한다.)
+	Sprite *bga_sprite;									// BGA 영상 스프라이트
+	Texture2D *bga_texture;								// BGA 영상 텍스쳐
+	cv::VideoCapture video_capture;						// 동영상 캡쳐객체
+	cv::Mat video_frame;								// 동영상 1프레임
+	int status_bga;										// 영상 채널 인덱스
+	int status_bgaCh;									// 영상 채널 변경 감지 인덱스
 	//--------------------------------------------------------------------------------
 	// 사운드 관련 정보(FMOD)
 	FMOD::System *sound_system;							// fmod 사운드 시스템
@@ -164,6 +183,7 @@ private:
 	double notes_barPosition[1000];						// 각 마디당 위치 정보
 
 	const int ZORDER_NOTES = 4;							// 노트의 z order
+	const int ZORDER_LAYOUT = 1;						// 레이아웃의 z order
 	const int ZORDER_NOTEBACKGROUND = 2;				// 노트 배경의 z order
 	const int ZORDER_BARS = 3;
 
@@ -239,6 +259,7 @@ public:
 	void operateKeyEffect(int keyNo);
 	void endKeyEffect(float interval, int keyNo);
 	void operateComboEffect(std::vector<NOTE::Note>::iterator cur_note);
+	void tickOperateBGA();
 
 	// implement the "static create()" method manually
 	CREATE_FUNC(GameScene);

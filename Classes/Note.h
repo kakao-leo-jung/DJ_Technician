@@ -47,9 +47,10 @@ namespace NOTE {
 		KEY_TRANS7 = 19,
 		KEY_BPM = 20,
 		KEY_BPMEXTEND = 21,
+		KEY_BGA = 22
 	};
 
-	const std::string STR_KEY[22] = {
+	const std::string STR_KEY[23] = {
 		"KEY_BGM",
 		"KEY_1",
 		"KEY_2",
@@ -71,10 +72,11 @@ namespace NOTE {
 		"KEY_TRANS6",
 		"KEY_TRANS7",
 		"KEY_BPM",
-		"KEY_BPMEXTEND"
+		"KEY_BPMEXTEND",
+		"KEY_BGA"
 	};
 
-	const double NOTE_POS_X[22] = {
+	const double NOTE_POS_X[23] = {
 		282,											// BGM Å° x Ãà ÁÂÇ¥
 		19,												// 1¹ø Å° x Ãà ÁÂÇ¥
 		55,												// 2¹ø Å° x Ãà ÁÂÇ¥
@@ -96,7 +98,8 @@ namespace NOTE {
 		410,											// 6¹ø Åõ¸í Å° x Ãà ÁÂÇ¥
 		410,											// 7¹ø Åõ¸í Å° x Ãà ÁÂÇ¥
 		322,											// BPM Å° x Ãà ÁÂÇ¥
-		322												// BPM È®Àå Å° x Ãà ÁÂÇ¥
+		322,											// BPM È®Àå Å° x Ãà ÁÂÇ¥
+		322												// BGA º¯°æ Å° x Ãà ÁÂÇ¥
 	};
 
 	class Note {

@@ -592,6 +592,26 @@ void BMSParser::readBms(std::string dirs, std::string fileName, double &status_b
 
 #pragma endregion
 				}
+				if (ch[5] == '4') {
+#pragma region BGA 변경 채널 "04"
+
+					/*
+
+						BGA 변경 채널은 일반 노트와 같이 취급해서 bpm 이나 마디길이에 영향을 받는다.
+						따라서 일반 notes 벡터에서 같이 스크롤 하고 time 을 계산하고 BGA 를 변경해준다.
+						단 이때, 저장한 노트의 채널값은 BGA 파일명을 가르키는게 아니라 BGM 확장 채널 배열의 인덱스를
+						나타낸다. 따라서 "08"의 경우와 같이
+						해당 str_bmp[notes_channel] 의 값으로 v_bga_bga[notes_channel] BGA 텍스쳐 또는 동영상을
+						로드해주고 v_bga_bga[notes_channel] 로 해당 텍스쳐나 영상을 변경한다.
+
+					*/
+
+					st = getInstance()->readDataLineFromIndex(ch, idx, getInstance()->BMP_PUNC);
+					getInstance()->setNoteFromTmpVector(st, bar_no, notes, NOTE::OBJ_EVENT, NOTE::KEY_BGA);
+
+#pragma endregion
+
+				}
 				break;
 #pragma endregion
 			case '1':
