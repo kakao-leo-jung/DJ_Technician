@@ -1,3 +1,6 @@
+#ifndef STARTSCENE_H
+#define STARTSCENE_H
+
 #pragma execution_character_set("utf-8")
 
 #include "cocos2d.h"
@@ -218,3 +221,5 @@ public:
 	// implement the "static create()" method manually
 	CREATE_FUNC(StartScene);
 };
+
+#endif

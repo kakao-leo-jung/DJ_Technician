@@ -1,11 +1,14 @@
+#ifndef	GAMESCENE_H
+#define GAMESCENE_H
+
 #include "cocos2d.h"
-#include "PauseScene.h"
 #include "opencv2/opencv.hpp"
-#include "MusicSelectScene.h"
+#include "BMSParser.h"
 #include <chrono>
 #include <fmod.hpp>
 
 USING_NS_CC;
+
 
 class GameScene : public cocos2d::Layer
 {
@@ -277,7 +280,10 @@ public:
 	void operateESC();
 	void operatePauseMenu();
 	void goBackMusicSelectScene();
+	void releaseData();
 
 	// implement the "static create()" method manually
 	CREATE_FUNC(GameScene);
 };
+
+#endif

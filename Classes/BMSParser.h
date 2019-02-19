@@ -1,3 +1,6 @@
+#ifndef BMSPARSER_H
+#define BMSPARSER_H
+
 #pragma execution_character_set("utf-8")
 
 #include "cocos2d.h"
@@ -54,3 +57,4 @@ public:
 		char obj, int key);
 
 };
+#endif

@@ -1,3 +1,6 @@
+#ifndef NOTE_H
+#define NOTE_H
+
 #pragma execution_character_set("utf-8")
 
 #include "cocos2d.h"
@@ -182,3 +185,5 @@ namespace NOTE {
 
 	};
 }
+
+#endif

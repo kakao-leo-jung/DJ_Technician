@@ -2,6 +2,7 @@
 #include "AppDelegate.h"
 #include "AudioEngine.h"
 #include "SimpleAudioEngine.h"
+#include "GameScene.h"
 
 /* 키 연속 입력 제한 매크로 */
 #define _KEYUSING if(status_keyUsing){ return;} status_keyUsing = true

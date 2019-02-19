@@ -1,3 +1,6 @@
+#ifndef PAUSESCENE_H
+#define PAUSESCENE_H
+
 #include "cocos2d.h"
 #include "SimpleAudioEngine.h"
 
@@ -21,3 +24,5 @@ public:
 	// implement the "static create()" method manually
 	CREATE_FUNC(PauseScene);
 };
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef DBMANAGER_H
+#define DBMANAGER_H
+
 #pragma execution_character_set("utf-8")
 
 #include "cocos2d.h"
@@ -31,3 +34,5 @@ public:
 
 	
 };
+
+#endif

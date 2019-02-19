@@ -1,3 +1,6 @@
+#ifndef MUSICHEADER_H
+#define MUSICHEADER_H
+
 #pragma execution_character_set("utf-8")
 
 #include "cocos2d.h"
@@ -34,3 +37,5 @@ public:
 	void setValues(int valueIdx, std::string val);
 
 };
+
+#endif

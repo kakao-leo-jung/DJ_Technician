@@ -1,9 +1,11 @@
+#ifndef MUSICSELECTSCENE_H
+#define MUSICSELECTSCENE_H
+
 #pragma execution_character_set("utf-8")
 
 #include "cocos2d.h"
-#include "opencv2/opencv.hpp"
-#include "GameScene.h"
 #include "BMSParser.h"
+#include "opencv2/opencv.hpp"
 
 USING_NS_CC;
 
@@ -231,3 +233,5 @@ public:
 	// implement the "static create()" method manually
 	CREATE_FUNC(MusicSelectScene);
 };
+
+#endif

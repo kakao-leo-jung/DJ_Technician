@@ -2,7 +2,9 @@
 #include "SimpleAudioEngine.h"
 #include "AudioEngine.h"
 #include "AppDelegate.h"
-
+#include "PauseScene.h"
+#include "MusicHeader.h"
+#include "MusicSelectScene.h"
 #include <sys/stat.h>
 #include <algorithm>
 #include <chrono>
@@ -1438,8 +1440,21 @@ void GameScene::operatePauseMenu() {
 
 /* 다시 음악 선택 씬으로 돌아감 */
 void GameScene::goBackMusicSelectScene() {
+
+	/*
+	
+		현재 로드한 모든 메모리에 관한 해제 해주어야 함
+	
+	*/
+
+
 	SimpleAudioEngine::getInstance()->playEffect(SOUND_CHANGESPEED.c_str());
 	AudioEngine::stopAll();
 	auto musicSelectScene = MusicSelectScene::createScene();
 	Director::getInstance()->replaceScene(TransitionFade::create(0.5f, musicSelectScene));
+}
+
+/* 로드한 메모리 해제 */
+void GameScene::releaseAll() {
+
 }
