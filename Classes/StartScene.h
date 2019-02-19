@@ -85,7 +85,7 @@ private:
 
 	*/
 	
-	const std::string BACKGROUND_FILENAME = "video/background7.mpg";// 동영상 파일이름 ( 20 초 이내의 파일만 사용!!)
+	const std::string BACKGROUND_FILENAME = "video/background8.mpg";// 동영상 파일이름 ( 20 초 이내의 파일만 사용!!)
 	const std::string LOGOSPRITE_FILENAME = "images/dj10.png";		// 로고 메인 스프라이트 파일이름
 	const std::string SUBLOGOSPRITE_FILENAME
 		= "images/technician.png";									// 서브로고 스프라이트 파일이름

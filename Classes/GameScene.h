@@ -95,7 +95,7 @@ private:
 
 	*/
 	const float JUDGE[4] = {
-		0.1f, 0.2f, 0.3f, 0.8f
+		0.05f, 0.1f, 0.15f, 0.2f
 	};													// 판정 라인
 	const std::string JUDGE_STR[4] = {
 		"PERFECT", "GOOD", "BAD", "MISS"

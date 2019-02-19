@@ -94,7 +94,7 @@ private:
 		- 추가로 검은 사각형 틀을 만들어 덧씌운다.
 
 	*/
-	const std::string BACKGROUND_FILENAME = "video/background7.mpg";// 동영상 파일이름 ( 20 초 이내의 파일만 사용!!)
+	const std::string BACKGROUND_FILENAME = "video/background8.mpg";// 동영상 파일이름 ( 20 초 이내의 파일만 사용!!)
 	Texture2D* background_texture;									// 캡쳐한 1프레임을 담을 texture
 	Sprite *background_sprite;										// 캡쳐한 texture를 담을 배경 sprite
 	cv::VideoCapture video_capture;									// 동영상 캡쳐객체

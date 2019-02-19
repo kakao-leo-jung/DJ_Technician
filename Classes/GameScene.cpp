@@ -1455,6 +1455,6 @@ void GameScene::goBackMusicSelectScene() {
 }
 
 /* 로드한 메모리 해제 */
-void GameScene::releaseAll() {
+void GameScene::releaseData() {
 
 }
