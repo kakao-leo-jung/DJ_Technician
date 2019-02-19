@@ -82,14 +82,13 @@ private:
 
 	*/
 	
-	const std::string BACKGROUND_FILENAME = "video/background5.avi";// 동영상 파일이름 ( 20 초 이내의 파일만 사용!!)
+	const std::string BACKGROUND_FILENAME = "video/background7.mpg";// 동영상 파일이름 ( 20 초 이내의 파일만 사용!!)
 	const std::string LOGOSPRITE_FILENAME = "images/dj10.png";		// 로고 메인 스프라이트 파일이름
 	const std::string SUBLOGOSPRITE_FILENAME
 		= "images/technician.png";									// 서브로고 스프라이트 파일이름
 	const std::string SUBLOGOPARTICLE_FILENAME
 		= "particle/logo_particle.png";								// 서브로고 파티클 파일이름
-	std::vector<Texture2D*> background_texture;						// 캡쳐한 1프레임을 담을 texture
-	std::vector<Texture2D*>::iterator background_iter;				// 배경 vector iterator
+	Texture2D* background_texture;									// 캡쳐한 1프레임을 담을 texture
 	Sprite *background_sprite;										// 캡쳐한 texture를 담을 배경 sprite
 	Sprite *logo_sprite;											// 로고 스프라이트
 	Sprite *sublogo_sprite;											// 서브로고 스프라이트

@@ -1438,8 +1438,8 @@ void GameScene::operatePauseMenu() {
 
 /* 다시 음악 선택 씬으로 돌아감 */
 void GameScene::goBackMusicSelectScene() {
-	SimpleAudioEngine::getInstance()->playEffect(SOUND_CHANGESPEED);
+	SimpleAudioEngine::getInstance()->playEffect(SOUND_CHANGESPEED.c_str());
 	AudioEngine::stopAll();
-	auto musicSelectScene = MusicSelectScene::createScene(background_texture);
+	auto musicSelectScene = MusicSelectScene::createScene();
 	Director::getInstance()->replaceScene(TransitionFade::create(0.5f, musicSelectScene));
 }

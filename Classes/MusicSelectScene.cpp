@@ -12,12 +12,9 @@ USING_NS_CC;
 using namespace experimental;
 using namespace CocosDenshion;
 
-std::vector<Texture2D*> tpbgv;
-
 //scene 생성
-Scene* MusicSelectScene::createScene(std::vector<Texture2D*> v)
+Scene* MusicSelectScene::createScene()
 {
-	tpbgv.assign(v.begin(), v.end());
 	auto scene = Scene::create();
 	auto layer = MusicSelectScene::create();
 	scene->addChild(layer);
@@ -189,7 +186,6 @@ void MusicSelectScene::setup() {
 	cache = Director::getInstance()->getTextureCache();
 	status_keyUsing = true;
 	heldKeys.clear();
-	background_texture.assign(tpbgv.begin(), tpbgv.end());
 
 	/*
 
@@ -295,29 +291,65 @@ void MusicSelectScene::setLayerBasicLayer() {
 
 	*/
 
-	/* 배경 스프라이트 초기화 및 세팅 */
-	background_sprite = Sprite::create();
-	background_iter = background_texture.begin();
-	background_sprite->initWithTexture(*background_iter);
-	background_sprite->setContentSize(size_window);
-	background_sprite->setPosition(size_window.width / 2, size_window.height / 2);
-	background_sprite->setVisible(false);
+	video_capture.open(BACKGROUND_FILENAME);
+	if (!video_capture.isOpened()) {
+		CCLOG("can't open video background..");
+		return;
+	}
+	else {
+		video_capture >> video_frame;
 
-	/* 한 틱당 스케쥴 함수 호출해서 영상 texture 갱신 */
-	this->schedule(schedule_selector(MusicSelectScene::background_tick));
+		/* BGR 에서 RGB 컬러 변경 */
+		cv::cvtColor(video_frame, video_frame, CV_BGR2RGB);
 
-	/* 기본 레이어에 배경 스프라이트 등록*/
-	this->addChild(background_sprite);
+		/* 사전에 미리 캡쳐한 프레임들을 모두 texture 화 하여 벡터에 저장 */
+		background_texture = new Texture2D();
+		background_texture->initWithData(video_frame.data,
+			video_frame.elemSize() * video_frame.cols * video_frame.rows,
+			Texture2D::PixelFormat::RGB888,
+			video_frame.cols,
+			video_frame.rows,
+			Size(video_frame.cols, video_frame.rows));
+		video_capture >> video_frame;
+
+		/* 배경 스프라이트 초기화 및 세팅 */
+		background_sprite = Sprite::create();
+		background_sprite->initWithTexture(background_texture);
+		background_sprite->setContentSize(size_window);
+		background_sprite->setPosition(size_window.width / 2, size_window.height / 2);
+		background_sprite->setOpacity(100);
+		background_sprite->setVisible(false);
+
+		/* 한 틱당 스케쥴 함수 호출해서 영상 texture 갱신 */
+		this->schedule(schedule_selector(MusicSelectScene::background_tick), 1.0 / 30);
+
+		/* 기본 레이어에 배경 스프라이트 등록*/
+		this->addChild(background_sprite);
+
+	}
 
 }
 
 /* 배경 동영상 재생*/
 void MusicSelectScene::background_tick(float interval) {
-	/* 텍스쳐를 끝까지 재생한 경우 다시 처음부터 갱신*/
-	if (background_iter == background_texture.end()) {
-		background_iter = background_texture.begin();
+	/* 다음 프레임을 비디오캡쳐에서 가져옴 */
+	video_capture >> video_frame;
+	if (!video_frame.empty()) {
+
+		/* BGR 에서 RGB 컬러 변경 */
+		cv::cvtColor(video_frame, video_frame, CV_BGR2RGB);
+
+		/* 다음 프레임의 MAT 파일로 텍스쳐를 업데이트 한다 */
+		background_texture->updateWithData(video_frame.data, 0, 0, video_frame.cols, video_frame.rows);
 	}
-	background_sprite->setTexture(*background_iter++);
+	else {
+		/*
+
+			배경동영상 무한 루프
+
+		*/
+		video_capture.open(BACKGROUND_FILENAME);
+	}
 }
 
 /* 로딩 화면 보여주기 */

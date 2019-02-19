@@ -3,6 +3,7 @@
 #include "cocos2d.h"
 #include "opencv2/opencv.hpp"
 #include "GameScene.h"
+#include "BMSParser.h"
 
 USING_NS_CC;
 
@@ -91,9 +92,11 @@ private:
 		- 추가로 검은 사각형 틀을 만들어 덧씌운다.
 
 	*/
-	std::vector<Texture2D*> background_texture;						// 캡쳐한 1프레임을 담을 texture
-	std::vector<Texture2D*>::iterator background_iter;				// 배경 vector iterator
+	const std::string BACKGROUND_FILENAME = "video/background7.mpg";// 동영상 파일이름 ( 20 초 이내의 파일만 사용!!)
+	Texture2D* background_texture;									// 캡쳐한 1프레임을 담을 texture
 	Sprite *background_sprite;										// 캡쳐한 texture를 담을 배경 sprite
+	cv::VideoCapture video_capture;									// 동영상 캡쳐객체
+	cv::Mat video_frame;											// 동영상 1프레임
 	//--------------------------------------------------------------------------------
 	//--------------------------------------------------------------------------------
 	// 로딩 라벨 설정
@@ -190,7 +193,7 @@ private:
 
 public:
 
-	static cocos2d::Scene* createScene(std::vector<Texture2D*> v);
+	static cocos2d::Scene* createScene();
 	virtual bool init();
 	virtual void onEnterTransitionDidFinish();
 

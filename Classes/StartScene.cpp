@@ -340,57 +340,37 @@ void StartScene::setLayerBasicLayer() {
 	else {
 		video_capture >> video_frame;
 
+		/*
 
-#ifdef _DEBUG /* 디버그 로딩 카운트 출력 변수 */
-		int fAllCount = video_capture.get(CV_CAP_PROP_FRAME_COUNT);
-		int fCount = 1;
-#endif
+			OpenCV 에서 비디오 프레임 색상은 BGR 을 사용한다.
+			Mat 을 Texture2D 로 전환하기 위해서 사용할 수 있는 포맷은
+			Texture2D::PixelFormat::RGB888 이다, (BGRA 만 존재하고 BGR 포맷은 지원하지 않는다.)
+			따라서 mat 타입의 BGR 포맷을 사전에 RGB 포맷으로 바꾼 후 Texture2D 로 생성해야 한다.
 
+		*/
+		/* BGR 에서 RGB 컬러 변경 */
+		cv::cvtColor(video_frame, video_frame, CV_BGR2RGB);
 
-		while (!video_frame.empty()) {
-
-
-#ifdef _DEBUG /* 디버그 로딩 카운트 출력 */
-			CCLOG("load Background Texture2D : %d/%d", fCount++, fAllCount / 2);
-#endif
-
-			/*
-			
-				OpenCV 에서 비디오 프레임 색상은 BGR 을 사용한다.
-				Mat 을 Texture2D 로 전환하기 위해서 사용할 수 있는 포맷은
-				Texture2D::PixelFormat::RGB888 이다, (BGRA 만 존재하고 BGR 포맷은 지원하지 않는다.)
-				따라서 mat 타입의 BGR 포맷을 사전에 RGB 포맷으로 바꾼 후 Texture2D 로 생성해야 한다.
-			
-			*/
-			/* BGR 에서 RGB 컬러 변경 */
-			cv::cvtColor(video_frame, video_frame, CV_BGR2RGB);
-
-			/* 사전에 미리 캡쳐한 프레임들을 모두 texture 화 하여 벡터에 저장 */
-			Texture2D *tp_texture = new Texture2D();
-			tp_texture->initWithData(video_frame.data,
-				video_frame.elemSize() * video_frame.cols * video_frame.rows,
-				Texture2D::PixelFormat::RGB888,
-				video_frame.cols,
-				video_frame.rows,
-				Size(video_frame.cols, video_frame.rows));
-			background_texture.push_back(tp_texture);
-			video_capture >> video_frame;
-
-		}
-
-		
+		/* 사전에 미리 캡쳐한 프레임들을 모두 texture 화 하여 벡터에 저장 */
+		background_texture = new Texture2D();
+		background_texture->initWithData(video_frame.data,
+			video_frame.elemSize() * video_frame.cols * video_frame.rows,
+			Texture2D::PixelFormat::RGB888,
+			video_frame.cols,
+			video_frame.rows,
+			Size(video_frame.cols, video_frame.rows));
+		video_capture >> video_frame;
 		
 		/* 배경 스프라이트 초기화 및 세팅 */
 		background_sprite = Sprite::create();
-		background_iter = background_texture.begin();
-		background_sprite->initWithTexture(*background_iter);
+		background_sprite->initWithTexture(background_texture);
 		background_sprite->setContentSize(size_window);
 		background_sprite->setPosition(size_window.width / 2, size_window.height / 2);
 		background_sprite->setOpacity(100);
 		background_sprite->setVisible(false);
 
 		/* 한 틱당 스케쥴 함수 호출해서 영상 texture 갱신 */
-		this->schedule(schedule_selector(StartScene::background_tick));
+		this->schedule(schedule_selector(StartScene::background_tick), 1.0 / 60);
 		
 		/* 기본 레이어에 배경 스프라이트 등록*/
 		background_sprite->setVisible(false);
@@ -442,11 +422,24 @@ void StartScene::setLayerBasicLayer() {
 
 /* 배경 동영상 재생*/
 void StartScene::background_tick(float interval) {
-	/* 텍스쳐를 끝까지 재생한 경우 다시 처음부터 갱신*/
-	if (background_iter == background_texture.end()) {
-		background_iter = background_texture.begin();
+	/* 다음 프레임을 비디오캡쳐에서 가져옴 */
+	video_capture >> video_frame;
+	if (!video_frame.empty()) {
+
+		/* BGR 에서 RGB 컬러 변경 */
+		cv::cvtColor(video_frame, video_frame, CV_BGR2RGB);
+
+		/* 다음 프레임의 MAT 파일로 텍스쳐를 업데이트 한다 */
+		background_texture->updateWithData(video_frame.data, 0, 0, video_frame.cols, video_frame.rows);
 	}
-	background_sprite->setTexture(*background_iter++);
+	else {
+		/*
+
+			배경동영상 무한 루프 
+
+		*/
+		video_capture.open(BACKGROUND_FILENAME);
+	}
 }
 
 /* Press Any Key 레이어 세팅*/
@@ -953,6 +946,6 @@ void StartScene::goMusicSelectScene() {
 	
 	SimpleAudioEngine::getInstance()->playEffect(SOUND_CHANGELAYER);
 	AudioEngine::stopAll();
-	auto musicSelectScene = MusicSelectScene::createScene(background_texture);
+	auto musicSelectScene = MusicSelectScene::createScene();
 	Director::getInstance()->replaceScene(TransitionFade::create(0.5f, musicSelectScene));
 }
