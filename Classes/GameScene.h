@@ -1,5 +1,7 @@
 #include "cocos2d.h"
 #include "BMSParser.h"
+#include "PauseScene.h"
+#include "MusicSelectScene.h"
 #include "opencv2/opencv.hpp"
 #include <chrono>
 #include <fmod.hpp>
@@ -62,6 +64,12 @@ private:
 		게임 진행 관련 변수
 
 	*/
+	std::chrono::time_point
+		<std::chrono::system_clock> chrono_time;		// 틱당 현재 절대 시간 저장
+	std::chrono::duration<double> pause_time;			// 일시 정지 시간
+	std::chrono::duration<double> pause_time_all;		// 총 일시 정지 누적 시간
+	std::chrono::time_point
+		<std::chrono::system_clock> chrono_pauseTime;	// 진행 중단 시점 시간 저장
 	double currentTime;									// 곡의 현재 진행 시간
 	double currentTime_bga;								// 현재채널 bga 진행을 위한 시간
 	double yPosOffset;									// 스크롤 거리 측정
@@ -85,7 +93,7 @@ private:
 
 	*/
 	const float JUDGE[4] = {
-		0.15f, 0.3f, 0.4f, 0.8f
+		0.1f, 0.2f, 0.3f, 0.8f
 	};													// 판정 라인
 	const std::string JUDGE_STR[4] = {
 		"PERFECT", "GOOD", "BAD", "MISS"
@@ -122,13 +130,17 @@ private:
 		영상 재생 관련 변수
 
 	*/
+	const std::string UI_TEXTURE_NOBGA
+		= "images/noImage2.png";						// BGA 없을때 대체 텍스쳐
 	std::vector<Texture2D*> v_bga_bga[1296];			// BGA 텍스쳐 벡터(영상 각 프레임 텍스쳐를 보관한다.)
+	bool status_isVideo[1296];							// 현재 채널이 영상인지 이미지인지 구분
 	Sprite *bga_sprite;									// BGA 영상 스프라이트
 	Texture2D *bga_texture;								// BGA 영상 텍스쳐
 	cv::VideoCapture video_capture;						// 동영상 캡쳐객체
 	cv::Mat video_frame;								// 동영상 1프레임
 	int status_bga;										// 영상 채널 인덱스
 	int status_bgaCh;									// 영상 채널 변경 감지 인덱스
+
 	//--------------------------------------------------------------------------------
 	// 사운드 관련 정보(FMOD)
 	FMOD::System *sound_system;							// fmod 사운드 시스템
@@ -166,6 +178,7 @@ private:
 		= "images/equalizer.png";						// 이퀄라이저 이펙트
 	const std::string UI_SPRITE_BAR
 		= "images/bars.png";							// 마디 스프라이트 파일
+	const int OPACITY_NOTE_SPRITE_BACKGROUND = 225;		// 노트 배경 투명도 - BGA 영상을 뒤에 얼마나 보여줄 것인가
 	Label *label_time_music;							// 곡 진행 시간 표시 라벨
 	Label *label_speed;									// 현재 곡 배속 라벨
 	Label *label_bpm;									// 현재 곡 BPM 라벨
@@ -260,6 +273,11 @@ public:
 	void endKeyEffect(float interval, int keyNo);
 	void operateComboEffect(std::vector<NOTE::Note>::iterator cur_note);
 	void tickOperateBGA();
+	void loadBGA();
+	void loadTexture();
+	void operateESC();
+	void operatePauseMenu();
+	void goBackMusicSelectScene();
 
 	// implement the "static create()" method manually
 	CREATE_FUNC(GameScene);

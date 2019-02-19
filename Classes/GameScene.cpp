@@ -78,12 +78,18 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event) {
 			CCLOG("game start");
 			gameStart();
 		}
+		else if (status_playing == PLAY_STATUS::PAUSED) {
+			operatePauseMenu();
+		}
 		break;
 	case EventKeyboard::KeyCode::KEY_1:
 		changeSpeed(false);
 		break;
 	case EventKeyboard::KeyCode::KEY_2:
 		changeSpeed(true);
+		break;
+	case EventKeyboard::KeyCode::KEY_ESCAPE:
+		operateESC();
 		break;
 	default:
 		break;
@@ -200,14 +206,11 @@ void GameScene::enableKeySetting() {
 void GameScene::initData() {
 	
 	/* 마디 변경 채널은 미리 1(4/4 박자)로 초기화 해놓는다. */
-	//memset(notes_barLength, 1.0f, sizeof(notes_barLength));
 	std::fill_n(notes_barLength, 1000, 1);
-	/* 마디 길이 제대로 저장? */
-	int i = 0;
-	while (i < 1000) {
-		CCLOG("Init_notes_barLength[%d] = %lf", i, notes_barLength[i]);
-		i++;
-	}
+
+	/* BMS 로드 */
+	BMSManager::getInstance()->readBms(status_dirs, status_bmsName, status_bpm,
+		str_bpmValue, str_wavFile, str_bmpFile, str_stopValue, &notes, notes_barLength);
 
 	// 노트 생성
 	setNotes();
@@ -241,9 +244,6 @@ void GameScene::initData() {
 void GameScene::setNotes() {
 	CCLOG("GameScene::setNotes()..");
 
-	/* BMS 데이터 파싱 */
-	parseBMS();
-
 	/* layer_notes 기본 설정 */
 	layer_notes->setPosition(Point(LAYER_POSITIONX, LAYER_POSITIONY));
 	layer_notes->setContentSize(Size(LAYER_WIDTH, LAYER_HEIGHT));
@@ -272,7 +272,7 @@ void GameScene::setNotes() {
 	note_sprite_background = Sprite::createWithTexture(cache->getTextureForKey(UI_SPRITE_NOATEBACKGROUND));
 	note_sprite_background->setAnchorPoint(Point(0, 0));
 	note_sprite_background->setPosition(Point(0, 0));
-	note_sprite_background->setOpacity(230);
+	note_sprite_background->setOpacity(OPACITY_NOTE_SPRITE_BACKGROUND);
 	layer_notes->addChild(note_sprite_background, ZORDER_NOTEBACKGROUND);
 
 #pragma endregion
@@ -448,79 +448,6 @@ void GameScene::setNotes() {
 
 #pragma endregion
 
-#pragma region BGA 로딩
-
-	/*
-	
-		만약 BGA 가 동영상 파일인지, 아니면 일반 이미지 파일인지
-		검사부터 한다.
-	
-	*/
-	std::string imgf = str_bmpFile[1];
-	fp = "bms/" + status_dirs + "/" + imgf;
-	chStr = "";
-	chPathFlag = false;
-	if (fp.find(".mpeg", 0, 5) != std::string::npos
-		|| fp.find(".mpg", 0, 4) != std::string::npos
-		|| fp.find(".wmv", 0, 4) != std::string::npos
-		|| fp.find(".avi", 0, 4) != std::string::npos) {
-
-		/*
-		
-			여기는 파일 이름이 동영상인 경우 openCV를 이용해 영상처리 해준다.
-			위에 if문에서 동영상 파일 포맷을 전부 검사하는 함수를 만들어서 다시 사용할 것.
-		
-		*/	
-
-		bga_texture = new Texture2D();
-		std::string filePath = "bms/" + status_dirs + "/" + str_bmpFile[1];
-		/* 영상 자름 */
-		video_capture.open(filePath);
-		if (!video_capture.isOpened()) {
-			CCLOG("can't open BGA background.. %s", filePath.c_str());
-		}
-		else {
-			/* 캡쳐한 비디오의 1프레임 MAT 형식을 Texture2D 로 변환 */
-			video_capture >> video_frame;
-
-			/* BGR 에서 RGB 컬러 변경 */
-			cv::cvtColor(video_frame, video_frame, CV_BGR2RGB);
-
-			/* 텍스쳐 변환 */
-			bga_texture->initWithData(video_frame.data,
-				video_frame.elemSize() * video_frame.cols * video_frame.rows,
-				Texture2D::PixelFormat::RGB888,
-				video_frame.cols,
-				video_frame.rows,
-				Size(video_frame.cols, video_frame.rows));
-		}
-
-	}
-	else {
-
-		/*
-		
-			여기는 동영상 파일이 존재하지 않는 경우이다 - 즉 이미지 확장자로 되어있을 경우이다.
-			이미지 확장자를 파악한 다음에 모두 이미지 로딩해준다.
-		
-		*/
-
-		/* 이미지 파일인데 확장자가 존재하지 않을 경우 다른 확장자로 검색해보아야 한다. */
-
-
-	}
-
-	/* 오프닝 스프라이트 세팅 */
-	bga_sprite = Sprite::create();
-	bga_sprite->initWithTexture(bga_texture);
-	bga_sprite->setContentSize(Size(size_window.width, size_window.height));
-	bga_sprite->setPosition(size_window.width / 2, size_window.height / 2);
-
-	this->addChild(bga_sprite);
-
-#pragma endregion
-
-
 #pragma region 마디 및 노트 세팅
 
 	/* 마디 길이 제대로 저장? */
@@ -564,12 +491,6 @@ void GameScene::setNotes() {
 		double notePosX = NOTE::NOTE_POS_X[cur_note->note_key];
 		layer_notes->addChild(cur_note->sprite, ZORDER_NOTES);
 
-		//if (cur_note->note_object == NOTE::OBJ_NOTE) {
-		//	cur_note->sprite->setVisible(true);
-		//}
-		//else {
-		//	cur_note->sprite->setVisible(false);
-		//}
 		cur_note->sprite->setVisible(false);
 
 		/* 노트 타임 세팅 */
@@ -698,18 +619,15 @@ void GameScene::setNotes() {
 
 #pragma endregion
 
+#pragma region BGA 로딩
+
+	loadBGA();
+
+#pragma endregion
+
 	/* 노트레이어 부착 */
 	this->addChild(layer_notes, 1);
 	CCLOG("GameScene::setNotes()..finished!");
-}
-
-// BMS 파싱
-void GameScene::parseBMS() {
-	
-	/* BMS Parser를 이용해 BMS정보를 불러온다. */
-	BMSParser::getInstance()->readBms(status_dirs, status_bmsName, status_bpm,
-		str_bpmValue, str_wavFile, str_bmpFile, str_stopValue, &notes, notes_barLength);
-
 }
 
 // UI 정보 설정
@@ -752,78 +670,137 @@ void GameScene::gameStart() {
 	
 }
 
+void GameScene::loadTexture() {
+
+
+
+}
+
+/* BGA 재생 틱 */
 void GameScene::tickOperateBGA() {
 	/* 현재 BGA 나타내기 */
 	/* BGA 채널이 변경했나 감지 */
 	if (status_bga != status_bgaCh) {
+
+		/* 
 		
+			바뀐 채널이 영상인지 이미지 파일인지 파악
+		
+		*/
+
 		/* BGA 채널 변경 */
 		std::string filePath = "bms/" + status_dirs + "/" + str_bmpFile[status_bga];
 
 		/* BGA 재생 시간 갱신 */
-		bga_start = std::chrono::system_clock::now();
+		bga_start = chrono_time;
 
-		/* 영상 자름 */
-		video_capture.open(filePath);
-		if (!video_capture.isOpened()) {
-			CCLOG("can't open BGA background.. %s", filePath.c_str());
+		if (status_isVideo[status_bga]) {
+			/* 영상임 */
+			/* 새 영상 로드 */
+			video_capture.open(filePath);
+			if (!video_capture.isOpened()) {
+				CCLOG("can't open BGA background.. %s", filePath.c_str());
+				/* 대체 이미지 전환 */
+				status_isVideo[status_bga] = false;
+				str_bmpFile[status_bga] = "../../images/" + UI_TEXTURE_NOBGA;
+			}
+			else {
+				CCLOG("open BGA background.. %s", filePath.c_str());
+
+				/* 캡쳐한 비디오의 1프레임 MAT 형식을 Texture2D 로 변환 */
+				video_capture >> video_frame;
+
+				/* BGR 에서 RGB 컬러 변경 */
+				cv::cvtColor(video_frame, video_frame, CV_BGR2RGB);
+
+				/* 텍스쳐 변환 */
+				CCLOG("Texture Setting.. %s", filePath.c_str());
+				delete bga_texture;
+				bga_texture = new Texture2D();
+				bga_texture->initWithData(video_frame.data,
+					video_frame.elemSize() * video_frame.cols * video_frame.rows,
+					Texture2D::PixelFormat::RGB888,
+					video_frame.cols,
+					video_frame.rows,
+					Size(video_frame.cols, video_frame.rows));
+				CCLOG("Texture Setting..finished %s", filePath.c_str());
+				CCLOG("Sprite Initting.. %s", filePath.c_str());
+				bga_sprite->initWithTexture(bga_texture);
+				bga_sprite->setContentSize(Size(size_window.width, size_window.height));
+				bga_sprite->setPosition(size_window.width / 2, size_window.height / 2);
+				CCLOG("Sprite Initting..finished %s", filePath.c_str());
+			}
 		}
 		else {
-			/* 캡쳐한 비디오의 1프레임 MAT 형식을 Texture2D 로 변환 */
-			video_capture >> video_frame;
+			/* 이미지 변경 */
+			bga_texture = Director::getInstance()->getTextureCache()->getTextureForKey(filePath);
 
-			/* BGR 에서 RGB 컬러 변경 */
-			cv::cvtColor(video_frame, video_frame, CV_BGR2RGB);
+			/* 이미지 애니메이션이 돌아가지 않는다면 여기서 더 코딩 해주어야함 
+			
+				1. bga_texture가 업데이트 되지 않아서 수동으로 스프라이트를 갱신해 주어야 하거나
+				2. .bmp 확장자일 경우.
+			
+			*/
 
-			/* 텍스쳐 변환 */
-			bga_texture->initWithData(video_frame.data,
-				video_frame.elemSize() * video_frame.cols * video_frame.rows,
-				Texture2D::PixelFormat::RGB888,
-				video_frame.cols,
-				video_frame.rows,
-				Size(video_frame.cols, video_frame.rows));
 		}
 
 		status_bgaCh = status_bga;
 	}
 	else {
 		/* BGA 채널 변경 x 그대로 진행 */
-		/* 아직 다음 프레임의 시간에 도달하지 않았으면 리턴한다 */
-		double ff = video_capture.get(CV_CAP_PROP_POS_MSEC) / 1000;
-		double gg = currentTime_bga;
-		if (ff > gg) {
-			return;
-		}
-		CCLOG("capture msec : %lf,    currentTime : %lf", ff, gg);
+		/* 이미지 채널인 경우 아무것도 하지 않는다. */
+		if (status_isVideo[status_bga]) {
+			/* 동영상일 경우 재생 */
+			/* 아직 다음 프레임의 시간에 도달하지 않았으면 리턴한다 */
+			double nextFrameTime = video_capture.get(CV_CAP_PROP_POS_MSEC) / 1000;
+			if (nextFrameTime > currentTime_bga) {
+				return;
+			}
 
-		video_capture >> video_frame;
-		if (!video_frame.empty()) {
-			/* BGR 에서 RGB 컬러 변경 */
-			cv::cvtColor(video_frame, video_frame, CV_BGR2RGB);
+			video_capture >> video_frame;
+			if (!video_frame.empty()) {
+				/* BGR 에서 RGB 컬러 변경 */
+				cv::cvtColor(video_frame, video_frame, CV_BGR2RGB);
 
-			/* 다음 프레임의 MAT 파일로 텍스쳐를 업데이트 한다 */
-			bga_texture->updateWithData(video_frame.data, 0, 0, video_frame.cols, video_frame.rows);
-		}
-		else {
-			/* BGA 재생 시간 갱신 */
-			bga_start = std::chrono::system_clock::now();
+				/* 다음 프레임의 MAT 파일로 텍스쳐를 업데이트 한다 */
+				bga_texture->updateWithData(video_frame.data, 0, 0, video_frame.cols, video_frame.rows);
+			}
+			else {
+				/* 대략 100 초 이상의 동영상이면 반복재생 하지 않는다 */
+				if (currentTime_bga < 100) {
+					/* BGA 재생 시간 갱신 */
+					bga_start = chrono_time;
 
-			/* 다시 오픈 - 무한반복 */
-			std::string filePath = "bms/" + status_dirs + "/" + str_bmpFile[status_bga];
-			video_capture.open(filePath);
+					/* 다시 오픈 - 무한반복 - 종료 확인하고 반복 안해도 됨 */
+					std::string filePath = "bms/" + status_dirs + "/" + str_bmpFile[status_bga];
+					video_capture.open(filePath);
+				}
+			}
 		}
+
+		
 	}
 }
 
 // 노트 재생 시 한 틱당 계산해야 할 것.(음악의 시작)
 void GameScene::tickOperate(float interval) {
+
+	/* 타이머 현재 시각 구함 */
+	chrono_time = std::chrono::system_clock::now();
+
+	if (status_playing == PLAY_STATUS::PAUSED) {
+		pause_time = chrono_time - chrono_pauseTime;
+		return;
+	}
+
 	/* 채널 갱신 */
 	sound_system->update();
 
 	/* 타이머 현재 시각 구함 */
-	auto chrono_time = std::chrono::system_clock::now();
 	time_music = chrono_time - time_start;
+	time_music -= pause_time_all;
 	time_bga = chrono_time - bga_start;
+	time_bga -= pause_time_all;
 	currentTime = time_music.count();
 	currentTime_bga = time_bga.count();
 	label_time_music->setString("music_time : " + std::to_string(currentTime));
@@ -939,6 +916,7 @@ void GameScene::operateNoteKey(NOTE::Note &note) {
 		break;
 	case NOTE::KEY_BGA:
 		status_bga = note.note_channel;
+		note.isChecked = true;
 		break;
 	default:
 		break;
@@ -1145,7 +1123,7 @@ void GameScene::operateKeyEffect(int keyNo) {
 
 	/* 각 키의 사운드 세팅이 끝나면 입력받은 키의 음을 재생 */
 	sound_system->playSound(v_sound_sound[thisKeyChannel], NULL, false, &sound_channel[thisKeyChannel]);
-
+	
 }
 
 /* 키 연주 입력해제 처리 */
@@ -1328,4 +1306,140 @@ void GameScene::operateComboEffect(std::vector<NOTE::Note>::iterator cur_note) {
 		combo_label->setOpacity(0);
 	}
 
+}
+
+/* BGA 관련 정보 로드 */
+void GameScene::loadBGA() {
+
+	/*
+
+		각 BGA 채널을 순회하면서
+		만약 BGA 가 동영상 파일인지, 아니면 일반 이미지 파일인지
+		검사부터 한다.
+
+	*/
+
+	int i = 0;
+	while (i < STR_CHANNELSIZE) {
+		std::string imgf = str_bmpFile[i];
+		std::string fp = "bms/" + status_dirs + "/" + imgf;
+		std::string chStr = "";
+		bool chPathFlag = false;
+		if (imgf.compare("") == 0) {
+			/* 공백 - 빈 채널인 경우 */
+			i++;
+			continue;
+		}
+		if (fp.find(".mpeg", 0, 5) != std::string::npos
+			|| fp.find(".mpg", 0, 4) != std::string::npos
+			|| fp.find(".wmv", 0, 4) != std::string::npos
+			|| fp.find(".avi", 0, 4) != std::string::npos) {
+
+			/* 현재 채널이 동영상 파일일 때 */
+			status_isVideo[i] = true;
+
+		}
+		else {
+
+			/* 확장자 유효성 검사 - 존재하는 확장자 찾아서 변경 없을시 No image */
+			struct stat buffer;
+			if (stat(fp.c_str(), &buffer) != 0) {
+				/* 사진 파일이 유효하지 않을 때 - jpg, png, bmp 파일 확인 해 봄 */
+				fp.pop_back(); fp.pop_back();
+				fp.pop_back(); fp.pop_back();
+				str_bmpFile[i].pop_back();
+				str_bmpFile[i].pop_back();
+				str_bmpFile[i].pop_back();
+				str_bmpFile[i].pop_back();
+				if (stat((fp + ".jpg").c_str(), &buffer) == 0) {
+					/* jpg 확장자 였을 때 */
+					str_bmpFile[i] += ".jpg";
+				}
+				else if (stat((fp + ".png").c_str(), &buffer) == 0) {
+					/* jpg 확장자 였을 때 */
+					str_bmpFile[i] += ".png";
+				}
+				else if (stat((fp + ".bmp").c_str(), &buffer) == 0) {
+					/* jpg 확장자 였을 때 */
+					str_bmpFile[i] += ".bmp";
+				}
+				else {
+					/* 확장자 지원 안함 */
+					str_bmpFile[i] = "../../images/" + UI_TEXTURE_NOBGA;
+				}
+			}
+#ifdef _DEBUG
+			CCLOG("str_bmpFile[%d] = %s", i, str_bmpFile[i].c_str());
+#endif // _DEBUG
+
+			/* 현재 채널이 사진 파일 일 때 */
+			status_isVideo[i] = false;
+
+		}
+		i++;
+	}
+
+	/* 오프닝 스프라이트 세팅 */
+	bga_texture = new Texture2D();
+	auto img = new Image();
+	img->initWithImageFile(UI_TEXTURE_NOBGA);
+	bga_texture->initWithImage(img, Texture2D::PixelFormat::RGB888);
+
+	bga_sprite = Sprite::create();
+	bga_sprite->initWithTexture(bga_texture);
+	bga_sprite->setContentSize(Size(size_window.width, size_window.height));
+	bga_sprite->setPosition(size_window.width / 2, size_window.height / 2);
+
+	this->addChild(bga_sprite);
+
+}
+
+/* ESC 키 눌렸을 때 */
+void GameScene::operateESC() {
+
+	/*
+	
+		곡이 진행중일 때는 연주를 중단하고 나가기 옵션 창을 띄움.
+		곡이 중단중(옵션창)일 때는 옵션창을 없애고 연주를 재개 함
+	
+	*/
+
+	/* 효과음 사운드 재생 */
+	SimpleAudioEngine::getInstance()->playEffect(SOUND_PAUSE.c_str());
+
+	if (status_playing == PLAY_STATUS::PLAYING) {
+		/* 중단해야 함 */
+		chrono_pauseTime = chrono_time;
+		status_playing = PLAY_STATUS::PAUSED;
+		for (FMOD::Channel *channel : sound_channel) {
+			channel->setPaused(true);
+		}
+	}
+	else if(status_playing == PLAY_STATUS::PAUSED){
+		/* 재개해야 함 */
+		pause_time_all += pause_time;
+		status_playing = PLAY_STATUS::PLAYING;
+		for (FMOD::Channel *channel : sound_channel) {
+			channel->setPaused(false);
+		}
+	}
+
+	/* 옵션창이 꺼져있으면 보여주고 보여주고 있으면 끔 */
+
+}
+
+/* Pause 메뉴일 때 상황에 맞는 동작 */
+void GameScene::operatePauseMenu() {
+	
+	/* 일단은 메뉴선택으로 되돌아가기 밖에 없다 */
+	goBackMusicSelectScene();
+
+}
+
+/* 다시 음악 선택 씬으로 돌아감 */
+void GameScene::goBackMusicSelectScene() {
+	SimpleAudioEngine::getInstance()->playEffect(SOUND_CHANGESPEED);
+	AudioEngine::stopAll();
+	auto musicSelectScene = MusicSelectScene::createScene(background_texture);
+	Director::getInstance()->replaceScene(TransitionFade::create(0.5f, musicSelectScene));
 }

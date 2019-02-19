@@ -224,7 +224,7 @@ void MusicSelectScene::setBmsList() {
 	//auto parser = BMSParser::getInstance();
 
 	/* 쓰레드 사용해서 로딩 */
-	std::thread loading(BMSParser::readAllBmsHeader, &musicHeaders);
+	std::thread loading(BMSManager::readAllBmsHeader, &musicHeaders);
 
 	/* 파서에서 모든 폴더의 음악 헤더정보 읽어옴 */
 	//BMSParser::getInstance()->readAllBmsHeader(&musicHeaders);

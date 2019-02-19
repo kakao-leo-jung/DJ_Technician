@@ -2,18 +2,18 @@
 #include "BMSParser.h"
 
 /* 싱글턴 패턴 */
-bool BMSParser::instanceFlag = false;
-BMSParser* BMSParser::instance = nullptr;
-BMSParser* BMSParser::getInstance() {
+bool BMSManager::instanceFlag = false;
+BMSManager* BMSManager::instance = nullptr;
+BMSManager* BMSManager::getInstance() {
 	if (!instance) {
-		instance = new BMSParser();
+		instance = new BMSManager();
 		instanceFlag = true;
 	}
 	return instance;
 }
 
 /* BMS 헤더 파일 읽기 - 폴더 내 전체 곡 정보 스캔 */
-void BMSParser::readAllBmsHeader(std::vector<MusicHeader> *musicHeaders) {
+void BMSManager::readAllBmsHeader(std::vector<MusicHeader> *musicHeaders) {
 	/* 
 	
 		Bms 폴더 하위에 있는 모든 디렉터리에 접근하여 bms, bme, bml 파일 헤더를 읽고
@@ -224,7 +224,7 @@ void BMSParser::readAllBmsHeader(std::vector<MusicHeader> *musicHeaders) {
 }
 
 /* '\n' 끝까지 읽기 */
-std::string BMSParser::readLineFromIndex(char ch[], int idx) {
+std::string BMSManager::readLineFromIndex(char ch[], int idx) {
 
 	/*
 	
@@ -243,7 +243,7 @@ std::string BMSParser::readLineFromIndex(char ch[], int idx) {
 }
 
 /* '\n' 끝까지 데이터 섹션 읽기 */
-std::vector<int> BMSParser::readDataLineFromIndex(char ch[], int idx, int punc) {
+std::vector<int> BMSManager::readDataLineFromIndex(char ch[], int idx, int punc) {
 
 	/*
 	
@@ -264,7 +264,7 @@ std::vector<int> BMSParser::readDataLineFromIndex(char ch[], int idx, int punc) 
 }
 
 /* 읽은 데이터 섹션을 노트데이터로 재생산 */
-void BMSParser::setNoteFromTmpVector(std::vector<int> st, int bar_no,
+void BMSManager::setNoteFromTmpVector(std::vector<int> st, int bar_no,
 	std::vector<NOTE::Note> *notes, char obj, int key) {
 
 	/* 각 채널의 비트값 = 마디번호 + 현재인덱스 / 전체사이즈 */
@@ -301,7 +301,7 @@ void BMSParser::setNoteFromTmpVector(std::vector<int> st, int bar_no,
 }
 
 /* 읽어들인 라인이 데이터 섹션인지 판별 */
-bool BMSParser::isDataSection(char ch[]) {
+bool BMSManager::isDataSection(char ch[]) {
 	/*
 	
 		읽어들인 라인의 1번째 인덱스가 문자이면 HeaderSection
@@ -312,7 +312,7 @@ bool BMSParser::isDataSection(char ch[]) {
 }
 
 /* char - 진법 숫자 변환 */
-int BMSParser::changeCharToInteger(char ch[], int idx) {
+int BMSManager::changeCharToInteger(char ch[], int idx) {
 
 	/*
 	
@@ -328,7 +328,7 @@ int BMSParser::changeCharToInteger(char ch[], int idx) {
 }
 
 /* 현재 줄 마디 번호 구함 */
-int BMSParser::getBarNumber(char ch[]) {
+int BMSManager::getBarNumber(char ch[]) {
 
 	/*
 	
@@ -345,7 +345,7 @@ int BMSParser::getBarNumber(char ch[]) {
 }
 
 /* 현재 줄 채널 번호 구함 */
-int BMSParser::getChannelNumber(char ch[], int idx, int punc) {
+int BMSManager::getChannelNumber(char ch[], int idx, int punc) {
 
 	/*
 	
@@ -357,7 +357,7 @@ int BMSParser::getChannelNumber(char ch[], int idx, int punc) {
 }
 
 /* BMS 전체 파일 읽기 */
-void BMSParser::readBms(std::string dirs, std::string fileName, double &status_bpm,
+void BMSManager::readBms(std::string dirs, std::string fileName, double &status_bpm,
 	double str_bpmValue[], std::string str_wavFile[], std::string str_bmpFile[], int str_stopValue[],
 	std::vector<NOTE::Note> *notes, double notes_barLength[]) {
 

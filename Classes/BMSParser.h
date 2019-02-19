@@ -14,13 +14,13 @@
 
 */
 
-class BMSParser
+class BMSManager
 {
 private:
 	/* 싱글턴 패턴 */
-	BMSParser() {}
+	BMSManager() {}
 	static bool instanceFlag;
-	static BMSParser* instance;
+	static BMSManager* instance;
 
 	/* 파싱 변수 */
 	/* 파싱 관련 진법 */
@@ -34,8 +34,8 @@ private:
 
 public:
 	/* 싱글턴 패턴 */
-	static BMSParser* getInstance();
-	virtual ~BMSParser() { instanceFlag = false; };
+	static BMSManager* getInstance();
+	virtual ~BMSManager() { instanceFlag = false; };
 
 	/* BMS 하위폴더 헤더 읽고 저장하기 */
 	static void readAllBmsHeader(std::vector<MusicHeader> *musicHeaders);
