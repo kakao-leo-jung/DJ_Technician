@@ -218,23 +218,72 @@ void GameScene::initData() {
 	setNotes();
 
 	// 기타 라벨 생성
-	label_time_music = Label::createWithSystemFont("music_time : 0", "consolas", 20);
-	label_speed = Label::createWithSystemFont("music_speed : " + std::to_string(status_speed), "consolas", 20);
-	label_bpm = Label::createWithSystemFont("music_bpm : " + std::to_string(status_bpm), "consolas", 20);
-	label_bar = Label::createWithSystemFont("music_bar : " + std::to_string(bar_iter_latest), "consolas", 20);
+	label_time_music = Label::createWithTTF("music_time : 0", SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+	label_speed = Label::createWithTTF("music_speed : " + std::to_string(status_speed), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+	label_bpm = Label::createWithTTF("music_bpm : " + std::to_string(status_bpm), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+	label_bar = Label::createWithTTF("music_bar : " + bar_iter_latest, SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+	score_currentScore_label = Label::createWithTTF("SCORE : "+std::to_string(score_currentScore), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+	score_currentCombo_label = Label::createWithTTF("COMBO : "+std::to_string(score_currentCombo), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+	score_maxCombo_label = Label::createWithTTF("MAX COMBO : "+std::to_string(score_maxCombo), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+	score_djLevel_label = Label::createWithTTF("LEVEL : "+ DJLEVEL_STR[score_djLevel], SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+	score_count_label[JUDGE::PERFECT] = Label::createWithTTF("PERFECT : "+std::to_string(score_judgeCount[JUDGE::PERFECT]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+	score_count_label[JUDGE::GREAT] = Label::createWithTTF("GREAT : " + std::to_string(score_judgeCount[JUDGE::GREAT]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+	score_count_label[JUDGE::GOOD] = Label::createWithTTF("GOOD : " + std::to_string(score_judgeCount[JUDGE::GOOD]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+	score_count_label[JUDGE::BAD] = Label::createWithTTF("BAD : " + std::to_string(score_judgeCount[JUDGE::BAD]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+	score_count_label[JUDGE::MISS] = Label::createWithTTF("MISS : " + std::to_string(score_judgeCount[JUDGE::MISS]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
 
 	// 라벨 설정
-	label_time_music->setPosition(size_window.width / 2, size_window.height / 2);
+	label_time_music->setPosition(size_window.width / 2, size_window.height / 2 + 60);
 	this->addChild(label_time_music);
 
-	label_speed->setPosition(size_window.width / 2, size_window.height / 2 - 20);
+	label_speed->setPosition(size_window.width / 2, size_window.height / 2 + 40);
 	this->addChild(label_speed);
 
-	label_bpm->setPosition(size_window.width / 2, size_window.height / 2 - 40);
+	label_bpm->setPosition(size_window.width / 2, size_window.height / 2 + 20);
 	this->addChild(label_bpm);
 
-	label_bar->setPosition(size_window.width / 2, size_window.height / 2 - 60);
+	label_bar->setPosition(size_window.width / 2, size_window.height / 2);
 	this->addChild(label_bar);
+
+	score_currentScore_label->setPosition(size_window.width / 2, size_window.height / 2 - 20);
+	this->addChild(score_currentScore_label);
+
+	score_currentCombo_label->setPosition(size_window.width / 2, size_window.height / 2 - 40);
+	this->addChild(score_currentCombo_label);
+
+	score_maxCombo_label->setPosition(size_window.width / 2, size_window.height / 2 - 60);
+	this->addChild(score_maxCombo_label);
+
+	score_djLevel_label->setPosition(size_window.width / 2, size_window.height / 2 - 80);
+	this->addChild(score_djLevel_label);
+
+	score_count_label[JUDGE::PERFECT]->setPosition(size_window.width / 2, size_window.height / 2 - 100);
+	this->addChild(score_count_label[JUDGE::PERFECT]);
+
+	score_count_label[JUDGE::GREAT]->setPosition(size_window.width / 2, size_window.height / 2 - 120);
+	this->addChild(score_count_label[JUDGE::GREAT]);
+
+	score_count_label[JUDGE::GOOD]->setPosition(size_window.width / 2, size_window.height / 2 - 140);
+	this->addChild(score_count_label[JUDGE::GOOD]);
+
+	score_count_label[JUDGE::BAD]->setPosition(size_window.width / 2, size_window.height / 2 - 160);
+	this->addChild(score_count_label[JUDGE::BAD]);
+
+	score_count_label[JUDGE::MISS]->setPosition(size_window.width / 2, size_window.height / 2 - 180);
+	this->addChild(score_count_label[JUDGE::MISS]);
 
 	/* 레디 사운드 재생 */
 	SimpleAudioEngine::getInstance()->playEffect(SOUND_READY.c_str());
@@ -287,7 +336,7 @@ void GameScene::setNotes() {
 		cache->addImage(UI_SPRITE_KEYPRESSFILE[i]);
 		keyPressed_sprite[i] = Sprite::createWithTexture(cache->getTextureForKey(UI_SPRITE_KEYPRESSFILE[i]));
 		keyPressed_sprite[i]->setAnchorPoint(Point(0, 0));
-		keyPressed_sprite[i]->setPosition(Point(-2, -LAYER_POSITIONY));
+		keyPressed_sprite[i]->setPosition(Point(-4, -LAYER_POSITIONY));
 		keyPressed_sprite[i]->setVisible(false);
 		note_sprite_background->addChild(keyPressed_sprite[i]);
 		i++;
@@ -393,7 +442,18 @@ void GameScene::setNotes() {
 	note_sprite_background->addChild(judge_time_label);
 
 #pragma endregion
-	 
+
+#pragma region 판정바
+
+	cache->addImage(UI_SPRITE_JUDGEBAR);
+	judgeBar_sprite = Sprite::createWithTexture(cache->getTextureForKey(UI_SPRITE_JUDGEBAR));
+	judgeBar_sprite->setPosition(Point(LAYER_WIDTH / 2, JUDGE_HEIGHT));
+	judgeBar_sprite->setOpacity(200);
+	layer_notes->addChild(judgeBar_sprite, ZORDER_BARS);
+
+#pragma endregion
+
+
 #pragma region 사운드 로딩
 
 	/* BMS 파일 사운드파일 유효성 검사*/
@@ -477,6 +537,12 @@ void GameScene::setNotes() {
 	for (auto it = notes.begin(); it != notes.end(); it++) {
 
 		auto cur_note = it;
+
+		/* 실 노트 개수 카운트 - 일단 스크래치는 콤보에서 제외 */
+		if (cur_note->note_object == NOTE::OBJ_NOTE && cur_note->note_key <= NOTE::KEY_7
+			&& cur_note->note_key >= NOTE::KEY_1 && cur_note->note_key != NOTE::KEY_SCRATCH) {
+			score_noteSize++;
+		}
 
 		/* 스프라이트 세팅 */
 		if (cur_note->note_key == 4) {
@@ -665,7 +731,7 @@ void GameScene::gameStart() {
 
 
 	/* BGA 변화 초기화 */
-	status_bgaCh = -1;
+	status_bgaCh = 0;
 
 	/* 틱 오퍼레이션 작동 0.015 초 마다 호출 */
 	this->schedule(schedule_selector(GameScene::tickOperate));
@@ -735,7 +801,24 @@ void GameScene::tickOperateBGA() {
 		}
 		else {
 			/* 이미지 변경 */
-			bga_texture = Director::getInstance()->getTextureCache()->getTextureForKey(filePath);
+			if (filePath.find(".bmp", 0, 4) != std::string::npos) {
+				/* 비트맵 확장자인 경우 파일을 파싱한다 */
+				CCLOG("change BGA.BMP : %s", filePath.c_str());
+				cv::Mat tpMat = cv::imread(filePath, CV_LOAD_IMAGE_UNCHANGED);
+				delete bga_texture;
+				bga_texture = new Texture2D();
+				bga_texture->initWithData(tpMat.data,
+					tpMat.elemSize() * tpMat.cols * tpMat.rows,
+					Texture2D::PixelFormat::RGB888,
+					tpMat.cols,
+					tpMat.rows,
+					Size(tpMat.cols, tpMat.rows));
+			}
+			else {	
+				CCLOG("change BGA : %s", filePath.c_str());
+				bga_texture = Director::getInstance()->getTextureCache()->getTextureForKey(filePath);
+			}
+
 
 			/* 이미지 애니메이션이 돌아가지 않는다면 여기서 더 코딩 해주어야함 
 			
@@ -743,6 +826,9 @@ void GameScene::tickOperateBGA() {
 				2. .bmp 확장자일 경우.
 			
 			*/
+
+			bga_sprite->setTexture(bga_texture);
+			
 
 		}
 
@@ -820,6 +906,17 @@ void GameScene::tickOperate(float interval) {
 	/* 현재 Bar 번호 나타내기 */
 	label_bar->setString("music_bar : " + std::to_string(bar_iter_latest - 1));
 
+	/* 현재 곡 정보 나타내기 */
+	score_currentScore_label->setString("SCORE : " + std::to_string(score_currentScore));
+	score_currentCombo_label->setString("COMBO : " + std::to_string(score_currentCombo));
+	score_maxCombo_label->setString("MAX COMBO : " + std::to_string(score_maxCombo));
+	score_djLevel_label->setString("LEVEL : " + DJLEVEL_STR[score_djLevel]);
+	score_count_label[JUDGE::PERFECT]->setString("PERFECT : " + std::to_string(score_judgeCount[JUDGE::PERFECT]));
+	score_count_label[JUDGE::GREAT]->setString("GREAT : " + std::to_string(score_judgeCount[JUDGE::GREAT]));
+	score_count_label[JUDGE::GOOD]->setString("GOOD : " + std::to_string(score_judgeCount[JUDGE::GOOD]));
+	score_count_label[JUDGE::BAD]->setString("BAD : " + std::to_string(score_judgeCount[JUDGE::BAD]));
+	score_count_label[JUDGE::MISS]->setString("MISS : " + std::to_string(score_judgeCount[JUDGE::MISS]));
+
 	/* iterator 시작점 설정 */
 	std::vector<NOTE::Note>::iterator cur_note = note_iter_latest;
 
@@ -830,7 +927,7 @@ void GameScene::tickOperate(float interval) {
 	int cur_bar = bar_iter_latest;
 	while (cur_bar < 1000) {
 
-		double bar_posy = notes_barPosition[cur_bar] - yPosOffset;
+		double bar_posy = notes_barPosition[cur_bar] - yPosOffset + JUDGE_HEIGHT;
 
 		if (bar_posy > size_window.height) {
 			break;
@@ -852,6 +949,7 @@ void GameScene::tickOperate(float interval) {
 
 		/* 시간 차 */
 		double time_diff_curTime = cur_note->note_time - currentTime;
+		double note_posy = cur_note->note_posy - yPosOffset + JUDGE_HEIGHT;
 
 		/*
 		
@@ -859,11 +957,12 @@ void GameScene::tickOperate(float interval) {
 		
 		*/
 
-		if (cur_note->note_posy - yPosOffset > size_window.height) {
+		if (note_posy > size_window.height) {
 			break;
 		}
 
-		cur_note->sprite->setPosition(Point(cur_note->sprite->getPositionX(), cur_note->note_posy - yPosOffset));
+		cur_note->sprite->setPosition(Point(cur_note->sprite->getPositionX(), note_posy));
+
 		if (cur_note->note_object == NOTE::OBJ_NOTE && !cur_note->isChecked) {
 			cur_note->sprite->setVisible(true);
 		}
@@ -873,12 +972,16 @@ void GameScene::tickOperate(float interval) {
 				operateNoteKey(*cur_note);
 			}
 			else {
-				cur_note->sprite->setVisible(false);
+				//cur_note->sprite->setVisible(false);
 				if (status_autoPlay && !cur_note->isChecked) {
 					CCLOG("auto Inside : %d", cur_note->note_key);
 					operateKeyEffect(cur_note->note_key);
 				}
 			}
+		}
+
+		if (note_posy <= 0 && !cur_note->isChecked) {
+			cur_note->sprite->setVisible(false);
 		}
 
 		if (time_diff_curTime <= -JUDGE[JUDGE::BAD]) {
@@ -1169,56 +1272,18 @@ void GameScene::operateComboEffect(std::vector<NOTE::Note>::iterator cur_note) {
 		판정 여부 검사
 
 	*/
-	int judgeNo = 0;
 
 	if (judgeTime > JUDGE[JUDGE::BAD]) {
 		/* 미리 눌렀을때 무시함 */
 		return;
 	}
 
-	if (judgeTime >= -JUDGE[JUDGE::PERFECT] && judgeTime <= JUDGE[JUDGE::PERFECT]) {
-		/* 퍼펙트 +- 0.15f 이내 */
-		cur_note->isChecked = true;
-		CCLOG("Perfect Checked : %d, %d", cur_note->isChecked, cur_note->note_key);
-		cur_note->sprite->setVisible(false);
-		judgeNo = JUDGE::PERFECT;
-		if (currentCombo == maxCombo) {
-			maxCombo = ++currentCombo;
-		}
-		else {
-			currentCombo++;
-		}
-	}
-	else if (judgeTime >= -JUDGE[JUDGE::GOOD] && judgeTime <= JUDGE[JUDGE::GOOD]) {
-		/* 굿 +- 0.3f 이내 */
-		cur_note->isChecked = true;
-		cur_note->sprite->setVisible(false);
-		judgeNo = JUDGE::GOOD;
-		if (currentCombo == maxCombo) {
-			maxCombo = ++currentCombo;
-		}
-		else {
-			currentCombo++;
-		}
-	}
-	else if (judgeTime >= -JUDGE[JUDGE::BAD] && judgeTime <= JUDGE[JUDGE::BAD]) {
-		/* 배드 +- 0.4f 이내 */
-		cur_note->isChecked = true;
-		cur_note->sprite->setVisible(false);
-		judgeNo = JUDGE::BAD;
-		if (currentCombo == maxCombo) {
-			maxCombo = ++currentCombo;
-		}
-		else {
-			currentCombo++;
-		}
-	}
-	else if (judgeTime < -JUDGE[JUDGE::BAD]) {
-		/* 미스 - 0.4f 초과 */
-		cur_note->isChecked = true;
-		judgeNo = JUDGE::MISS;
-		currentCombo = 0;
-	}
+	cur_note->isChecked = true;
+	cur_note->sprite->setVisible(false);
+	CCLOG("Perfect Checked : %d, %d", cur_note->isChecked, cur_note->note_key);
+
+	/* 콤보 점수 산정 */
+	int judgeNo = calculateCombo(judgeTime);
 
 	/*
 
@@ -1280,7 +1345,7 @@ void GameScene::operateComboEffect(std::vector<NOTE::Note>::iterator cur_note) {
 		bomb_sprite[keyNo]->runAction(seqan);
 
 		/* 점수 이펙트 보이기 */
-		combo_label->setString(std::to_string(currentCombo));
+		combo_label->setString(std::to_string(score_currentCombo));
 		combo_label->setPosition(LAYER_WIDTH / 2, note_sprite_background->getContentSize().height / 8 * 5);
 		mov = MoveBy::create(0.0f, Point(0, -10));
 		mov1 = MoveBy::create(COMBO_ACTIONTIME, Point(0, 10));
@@ -1308,6 +1373,79 @@ void GameScene::operateComboEffect(std::vector<NOTE::Note>::iterator cur_note) {
 		combo_label->setOpacity(0);
 	}
 
+}
+
+/* 주어진 판정시간에 대한 판정을 리턴하고 점수를 산정한다 */
+int GameScene::calculateCombo(double judgeTime) {
+	
+	/* 판정 값 */
+	int judgeNo;
+
+	/* 점수 산정용 변수 */
+	double plusScore = 0;
+	double b = 100000.0 / score_noteSize;
+	double v = 50000.0 / (10 * score_noteSize - 55);
+
+	if (judgeTime >= -JUDGE[JUDGE::PERFECT] && judgeTime <= JUDGE[JUDGE::PERFECT]) {
+		/* 퍼펙트 +- 0.15f 이내 */
+		judgeNo = JUDGE::PERFECT;
+		score_currentCombo = (score_currentCombo == score_maxCombo)
+			? score_maxCombo = score_currentCombo + 1 : score_currentCombo + 1;
+		
+		/* 점수 산정 */
+		int offset = (score_currentCombo <= 10) ? score_currentCombo - 1 : 10;	
+		plusScore = 1.5 * b + offset * v;
+		
+	}
+	else if (judgeTime >= -JUDGE[JUDGE::GREAT] && judgeTime <= JUDGE[JUDGE::GREAT]) {
+		/* 그레이트 */
+		judgeNo = JUDGE::GREAT;
+		score_currentCombo = (score_currentCombo == score_maxCombo)
+			? score_maxCombo = score_currentCombo + 1 : score_currentCombo + 1;
+
+		/* 점수 산정 */
+		int offset = (score_currentCombo <= 10) ? score_currentCombo - 1 : 10;
+		plusScore = 1.0 * b + offset * v;
+	}
+	else if (judgeTime >= -JUDGE[JUDGE::GOOD] && judgeTime <= JUDGE[JUDGE::GOOD]) {
+		/* 굿 +- 0.3f 이내 */
+		judgeNo = JUDGE::GOOD;
+		score_currentCombo = (score_currentCombo == score_maxCombo)
+			? score_maxCombo = score_currentCombo + 1 : score_currentCombo + 1;
+
+		/* 점수 산정 */
+		int offset = (score_currentCombo <= 10) ? score_currentCombo - 1 : 10;
+		plusScore = 0.2 * b + offset * v;
+	}
+	else if (judgeTime >= -JUDGE[JUDGE::BAD] && judgeTime <= JUDGE[JUDGE::BAD]) {
+		/* 배드 +- 0.4f 이내 */
+		judgeNo = JUDGE::BAD;
+		score_currentCombo = 0;
+	}
+	else if (judgeTime < -JUDGE[JUDGE::BAD]) {
+		/* 미스 - 0.4f 초과 */
+		judgeNo = JUDGE::MISS;
+		score_currentCombo = 0;
+	}
+
+	score_judgeCount[judgeNo]++;
+	score_currentScore += plusScore;
+	score_currentSize++;
+
+	int ex_score = score_judgeCount[JUDGE::PERFECT] * 2 + score_judgeCount[JUDGE::GREAT];
+	CCLOG("ex_score : %d", ex_score);
+	int max_score = score_currentSize * 2;
+	double level_score = (double)ex_score / max_score;
+	CCLOG("level_score : %lf", level_score);
+	if (level_score >= 8.5 / 9) {
+		score_djLevel = 8;
+	}
+	else {
+		score_djLevel = level_score * 9;
+	}
+	CCLOG("score_djLevel : %d", score_djLevel);
+
+	return judgeNo;
 }
 
 /* BGA 관련 정보 로드 */
@@ -1343,6 +1481,9 @@ void GameScene::loadBGA() {
 		}
 		else {
 
+			/* 현재 채널이 사진 파일 일 때 */
+			status_isVideo[i] = false;
+
 			/* 확장자 유효성 검사 - 존재하는 확장자 찾아서 변경 없을시 No image */
 			struct stat buffer;
 			if (stat(fp.c_str(), &buffer) != 0) {
@@ -1356,26 +1497,36 @@ void GameScene::loadBGA() {
 				if (stat((fp + ".jpg").c_str(), &buffer) == 0) {
 					/* jpg 확장자 였을 때 */
 					str_bmpFile[i] += ".jpg";
+					fp = "bms/" + status_dirs + "/" + str_bmpFile[i];
+					cache->addImage(fp);
 				}
 				else if (stat((fp + ".png").c_str(), &buffer) == 0) {
-					/* jpg 확장자 였을 때 */
+					/* png 확장자 였을 때 */
 					str_bmpFile[i] += ".png";
+					fp = "bms/" + status_dirs + "/" + str_bmpFile[i];
+					cache->addImage(fp);
 				}
 				else if (stat((fp + ".bmp").c_str(), &buffer) == 0) {
-					/* jpg 확장자 였을 때 */
+					/* bmp 확장자 였을 때 */
 					str_bmpFile[i] += ".bmp";
 				}
 				else {
 					/* 확장자 지원 안함 */
 					str_bmpFile[i] = "../../images/" + UI_TEXTURE_NOBGA;
+					fp = "bms/" + status_dirs + "/" + str_bmpFile[i];
+					cache->addImage(fp);
 				}
 			}
+			else {
+				fp = "bms/" + status_dirs + "/" + str_bmpFile[i];
+				cache->addImage(fp);
+			}
+			
+
+
 #ifdef _DEBUG
 			CCLOG("str_bmpFile[%d] = %s", i, str_bmpFile[i].c_str());
 #endif // _DEBUG
-
-			/* 현재 채널이 사진 파일 일 때 */
-			status_isVideo[i] = false;
 
 		}
 		i++;
@@ -1447,6 +1598,7 @@ void GameScene::goBackMusicSelectScene() {
 	
 	*/
 
+	releaseData();
 
 	SimpleAudioEngine::getInstance()->playEffect(SOUND_CHANGESPEED.c_str());
 	AudioEngine::stopAll();
@@ -1456,5 +1608,12 @@ void GameScene::goBackMusicSelectScene() {
 
 /* 로드한 메모리 해제 */
 void GameScene::releaseData() {
+
+	/* 사운드 해제 */
+	for (FMOD::Sound *sound : v_sound_sound) {
+		sound->release();
+	}
+	sound_system->release();
+	sound_system->close();
 
 }

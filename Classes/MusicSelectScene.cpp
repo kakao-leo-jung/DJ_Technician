@@ -427,7 +427,6 @@ void MusicSelectScene::setLayerMusicSelect() {
 		/* 스프라이트 경로 유효성 검사 */
 		struct stat buffer;
 		if (curHeader.getValues(MusicHeader::STAGEFILE).compare("") == 0
-			|| curHeader.getValues(MusicHeader::STAGEFILE).find(".bmp", 0, 4) != std::string::npos
 			|| stat(spritePath.c_str(), &buffer) != 0) {
 			/* 스테이지 파일이 존재하지 않을 때 || 스테이지 파일이 비트맵 포맷일 때 */
 			/*
@@ -447,9 +446,28 @@ void MusicSelectScene::setLayerMusicSelect() {
 #endif
 
 		/* Batch Drawing 성능 비교 */
-		SpriteBatchNode *batchNode = SpriteBatchNode::create(spritePath);
-		this->addChild(batchNode);
-		auto tpSprite = Sprite::createWithTexture(batchNode->getTexture());
+		Sprite *tpSprite;
+		if (curHeader.getValues(MusicHeader::STAGEFILE).find(".bmp", 0, 4) != std::string::npos) {
+			/* bmp 파일일 때 */
+							/* 비트맵 확장자인 경우 파일을 파싱한다 */
+			CCLOG("parse BMP : %s", spritePath.c_str());
+			cv::Mat tpMat = cv::imread(spritePath, CV_LOAD_IMAGE_UNCHANGED);
+			auto bga_texture = new Texture2D();
+			bga_texture->initWithData(tpMat.data,
+				tpMat.elemSize() * tpMat.cols * tpMat.rows,
+				Texture2D::PixelFormat::RGB888,
+				tpMat.cols,
+				tpMat.rows,
+				Size(tpMat.cols, tpMat.rows));
+			tpSprite = Sprite::createWithTexture(bga_texture);
+		}
+		else {
+			/* bmp 파일이 아닐 때 */
+			SpriteBatchNode *batchNode = SpriteBatchNode::create(spritePath);
+			this->addChild(batchNode);
+			tpSprite = Sprite::createWithTexture(batchNode->getTexture());
+		}
+
 
 		/* 일반 스프라이트 생성 할때 */
 		//cache->addImage(spritePath);

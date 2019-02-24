@@ -52,10 +52,13 @@ private:
 	double first_bpm;									// 현재 곡 시작 BPM
 	int status_bpm_tick;								// 현재까지 BPM 울린 횟수
 	double status_next_tick_time;						// 다음 틱이 되어야 할 시간
+
 	std::chrono::system_clock::time_point time_start;	// 곡 시작 시간
 	std::chrono::system_clock::time_point bga_start;	// BGA 시작 시간
 	std::chrono::duration<double> time_music;			// 곡 진행 시간
 	std::chrono::duration<double> time_bga;				// BGA 진행 시간
+
+	int score_noteSize;									// 전체 노트 개수(Max 콤보 수)
 
 	std::vector<NOTE::Note>::iterator note_iter_latest;	// 가장 최신 노트
 	int bar_iter_latest;								// 가장 최신 마디번호
@@ -94,19 +97,30 @@ private:
 		판정 관련 변수
 
 	*/
-	const float JUDGE[4] = {
-		0.05f, 0.1f, 0.15f, 0.2f
+	const float JUDGE[5] = {
+		0.021f, 0.084f, 0.147f, 0.21f, 0.273f
 	};													// 판정 라인
-	const std::string JUDGE_STR[4] = {
-		"PERFECT", "GOOD", "BAD", "MISS"
+	const std::string JUDGE_STR[5] = {
+		"PERFECT", "GREAT",  "GOOD", "BAD", "MISS"
 	};													// 판정 STRING 값
 	enum JUDGE {
-		PERFECT, GOOD, BAD, MISS
+		PERFECT, GREAT, GOOD, BAD, MISS
+	};
+	const std::string DJLEVEL_STR[9] = {
+		"F", "E", "D", "C", "B", "A", "AA", "AAA", "S"
+	};
+	enum DJLEVEL {
+		RANK_F, RANK_E, RANK_D, RANK_C, RANK_B, RANK_A, RANK_AA, RANK_AAA, RANK_S
 	};
 	Label *combo_label;									// 현재 콤보 라벨
 	Label *combo_label_ui;								// 현재 콤보 UI 라벨
 	Label *judge_label;									// 현재 판정
 	Label *judge_time_label;							// 현재 판정시간 라벨
+	Label *score_currentScore_label;					// 누적 점수 라벨
+	Label *score_currentCombo_label;					// 현재 콤보 라벨
+	Label *score_maxCombo_label;						// 현재 맥스콤보 라벨
+	Label *score_count_label[5];						// 현재 판정
+	Label *score_djLevel_label;							// DJ Level 라벨
 	const std::string COMBO_FONT
 		= "fonts/Teko-Light.ttf";						// 콤보 폰트
 	const int COMBO_FONTSIZE = 200;						// 콤보 폰트사이즈
@@ -117,14 +131,17 @@ private:
 		= "fonts/Teko-Light.ttf";						// 저지 폰트
 	const int JUDGE_FONTSIZE = 100;						// 저지 폰트사이즈
 	const int JUDGE_TIME_FONTSIZE = 25;					// 저지 타임 폰트사이즈
+	const std::string SYSTEMS_FONT
+		= "fonts/LuluMonospace.ttf";					// 시스템 폰트
+	const int SYSTEMS_FONTSIZE = 20;					// 시스템 폰트사이즈
 	const float COMBO_ACTIONTIME = 0.02f;				// 콤보 액션 시간
 	const float COMBO_ACTIONDELAYTIME = 1.0f;			// 콤보 유지 시간
-	int currentCombo;									// 현재 콤보
-	int maxCombo;										// 최대 콤보
-	int perfectCount;									// perfect 개수
-	int goodCount;										// good 개수
-	int badCount;										// bad 개수
-	int missCount;										// miss 개수
+	int score_currentScore;								// 누적 점수
+	int score_currentCombo;								// 현재 콤보
+	int score_maxCombo;									// 최대 콤보
+	int score_judgeCount[5];							// 누적 판정
+	int score_currentSize;								// 현재 누적 노트 수
+	int score_djLevel;									// 현재 DJ Level
 	//--------------------------------------------------------------------------------
 	//--------------------------------------------------------------------------------
 	/*
@@ -180,7 +197,10 @@ private:
 		= "images/equalizer.png";						// 이퀄라이저 이펙트
 	const std::string UI_SPRITE_BAR
 		= "images/bars.png";							// 마디 스프라이트 파일
+	const std::string UI_SPRITE_JUDGEBAR
+		= "images/judgeBar.png";						// 판정선 스프라이트 파일
 	const int OPACITY_NOTE_SPRITE_BACKGROUND = 225;		// 노트 배경 투명도 - BGA 영상을 뒤에 얼마나 보여줄 것인가
+	const int JUDGE_HEIGHT = 5;							// 판정 높이 조정
 	Label *label_time_music;							// 곡 진행 시간 표시 라벨
 	Label *label_speed;									// 현재 곡 배속 라벨
 	Label *label_bpm;									// 현재 곡 BPM 라벨
@@ -191,6 +211,7 @@ private:
 	Sprite *bomb_sprite[10];							// 제대로 눌렀을 때 폭탄 스프라이트
 	Sprite *equalizer_sprite;							// 이퀄라이저 스프라이트
 	Sprite *bars_sprite[1000];							// 마디 스프라이트
+	Sprite *judgeBar_sprite;							// 판정선 스프라이트
 	//--------------------------------------------------------------------------------
 	// 노트 정보
 	std::vector<NOTE::Note> notes;						// 노트 정보(키채널 11 ~ 19)
@@ -200,7 +221,7 @@ private:
 	const int ZORDER_NOTES = 4;							// 노트의 z order
 	const int ZORDER_LAYOUT = 1;						// 레이아웃의 z order
 	const int ZORDER_NOTEBACKGROUND = 2;				// 노트 배경의 z order
-	const int ZORDER_BARS = 3;
+	const int ZORDER_BARS = 3;							// 노트 마디의 z order
 
 	const int KEY_SIZE = 7;								// 키 사이즈 (7 키만 지원한다)
 
@@ -274,6 +295,7 @@ public:
 	void operateKeyEffect(int keyNo);
 	void endKeyEffect(float interval, int keyNo);
 	void operateComboEffect(std::vector<NOTE::Note>::iterator cur_note);
+	int calculateCombo(double judgeTime);
 	void tickOperateBGA();
 	void loadBGA();
 	void loadTexture();
