@@ -218,72 +218,100 @@ void GameScene::initData() {
 	setNotes();
 
 	// 기타 라벨 생성
-	label_time_music = Label::createWithTTF("music_time : 0", SYSTEMS_FONT, SYSTEMS_FONTSIZE,
-		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
-	label_speed = Label::createWithTTF("music_speed : " + std::to_string(status_speed), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
-		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
-	label_bpm = Label::createWithTTF("music_bpm : " + std::to_string(status_bpm), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
-		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+	label_time_music = Label::createWithTTF("0 : 00", UI_LABEL_TIMEMUSIC_FONT, UI_LABEL_TIMEMUSIC_FONTSIZE,
+		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
+	label_speed = Label::createWithTTF("x " + std::to_string((int)status_speed), UI_LABEL_SPEED_FONT, UI_LABEL_SPEED_FONTSIZE,
+		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
+	label_bpm = Label::createWithTTF(std::to_string((int)status_bpm), UI_LABEL_BPM_FONT, UI_LABEL_BPM_FONTSIZE,
+		Size(150, 50), TextHAlignment::CENTER, TextVAlignment::CENTER);
 	label_bar = Label::createWithTTF("music_bar : " + bar_iter_latest, SYSTEMS_FONT, SYSTEMS_FONTSIZE,
-		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
-	score_currentScore_label = Label::createWithTTF("SCORE : "+std::to_string(score_currentScore), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
-		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
+	score_currentScore_label = Label::createWithTTF(std::to_string(score_currentScore), UI_LABEL_CURRENTSCORE_FONT, UI_LABEL_CURRENTSCORE_FONTSIZE,
+		Size(150, 50), TextHAlignment::RIGHT, TextVAlignment::CENTER);
 	score_currentCombo_label = Label::createWithTTF("COMBO : "+std::to_string(score_currentCombo), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
-		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
-	score_maxCombo_label = Label::createWithTTF("MAX COMBO : "+std::to_string(score_maxCombo), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
-		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
-	score_djLevel_label = Label::createWithTTF("LEVEL : "+ DJLEVEL_STR[score_djLevel], SYSTEMS_FONT, SYSTEMS_FONTSIZE,
-		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
-	score_count_label[JUDGE::PERFECT] = Label::createWithTTF("PERFECT : "+std::to_string(score_judgeCount[JUDGE::PERFECT]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
-		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
-	score_count_label[JUDGE::GREAT] = Label::createWithTTF("GREAT : " + std::to_string(score_judgeCount[JUDGE::GREAT]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
-		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
-	score_count_label[JUDGE::GOOD] = Label::createWithTTF("GOOD : " + std::to_string(score_judgeCount[JUDGE::GOOD]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
-		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
-	score_count_label[JUDGE::BAD] = Label::createWithTTF("BAD : " + std::to_string(score_judgeCount[JUDGE::BAD]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
-		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
-	score_count_label[JUDGE::MISS] = Label::createWithTTF("MISS : " + std::to_string(score_judgeCount[JUDGE::MISS]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
-		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
+	score_maxCombo_label = Label::createWithTTF(std::to_string(score_maxCombo), UI_LABEL_MAXCOMBO_FONT, UI_LABEL_MAXCOMBO_FONTSIZE,
+		Size(150, 50), TextHAlignment::RIGHT, TextVAlignment::CENTER);
+	score_djLevel_label = Label::createWithTTF(DJLEVEL_STR[score_djLevel], UI_LABEL_DJLEVEL_FONT, UI_LABEL_DJLEVEL_FONTSIZE,
+		Size(150, 50), TextHAlignment::CENTER, TextVAlignment::CENTER);
+	score_count_label[JUDGE::PERFECT] = Label::createWithTTF(std::to_string(score_judgeCount[JUDGE::PERFECT]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
+	score_count_label[JUDGE::GREAT] = Label::createWithTTF(std::to_string(score_judgeCount[JUDGE::GREAT]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
+	score_count_label[JUDGE::GOOD] = Label::createWithTTF(std::to_string(score_judgeCount[JUDGE::GOOD]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
+	score_count_label[JUDGE::BAD] = Label::createWithTTF(std::to_string(score_judgeCount[JUDGE::BAD]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
+	score_count_label[JUDGE::MISS] = Label::createWithTTF(std::to_string(score_judgeCount[JUDGE::MISS]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
+	score_countUi_label[JUDGE::PERFECT] = Label::createWithTTF("PERFECT", SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(150, 50), TextHAlignment::RIGHT, TextVAlignment::CENTER);
+	score_countUi_label[JUDGE::GREAT] = Label::createWithTTF("GREAT", SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(150, 50), TextHAlignment::RIGHT, TextVAlignment::CENTER);
+	score_countUi_label[JUDGE::GOOD] = Label::createWithTTF("GOOD", SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(150, 50), TextHAlignment::RIGHT, TextVAlignment::CENTER);
+	score_countUi_label[JUDGE::BAD] = Label::createWithTTF("BAD", SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(150, 50), TextHAlignment::RIGHT, TextVAlignment::CENTER);
+	score_countUi_label[JUDGE::MISS] = Label::createWithTTF("MISS", SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+		Size(150, 50), TextHAlignment::RIGHT, TextVAlignment::CENTER);
 
 	// 라벨 설정
-	label_time_music->setPosition(size_window.width / 2, size_window.height / 2 + 60);
-	this->addChild(label_time_music);
+	label_time_music->setPosition(UI_LABEL_TIMEMUSIC_X, UI_LABEL_TIMEMUSIC_Y);
+	this->addChild(label_time_music, ZORDER_LABEL);
 
-	label_speed->setPosition(size_window.width / 2, size_window.height / 2 + 40);
-	this->addChild(label_speed);
+	label_speed->setPosition(UI_LABEL_SPEED_X, UI_LABEL_SPEED_Y);
+	this->addChild(label_speed, ZORDER_LABEL);
 
-	label_bpm->setPosition(size_window.width / 2, size_window.height / 2 + 20);
-	this->addChild(label_bpm);
+	label_bpm->setPosition(UI_LABEL_BPM_X, UI_LABEL_BPM_Y);
+	this->addChild(label_bpm, ZORDER_LABEL);
 
 	label_bar->setPosition(size_window.width / 2, size_window.height / 2);
-	this->addChild(label_bar);
+	label_bar->setVisible(false);
+	this->addChild(label_bar, ZORDER_LABEL);
 
-	score_currentScore_label->setPosition(size_window.width / 2, size_window.height / 2 - 20);
-	this->addChild(score_currentScore_label);
+	score_currentScore_label->setPosition(UI_LABEL_CURRENTSCORE_X, UI_LABEL_CURRENTSCORE_Y);
+	this->addChild(score_currentScore_label, ZORDER_LABEL);
 
 	score_currentCombo_label->setPosition(size_window.width / 2, size_window.height / 2 - 40);
-	this->addChild(score_currentCombo_label);
+	score_currentCombo_label->setVisible(false);
+	this->addChild(score_currentCombo_label, ZORDER_LABEL);
 
-	score_maxCombo_label->setPosition(size_window.width / 2, size_window.height / 2 - 60);
-	this->addChild(score_maxCombo_label);
+	score_maxCombo_label->setPosition(UI_LABEL_MAXCOMBO_X, UI_LABEL_MAXCOMBO_Y);
+	this->addChild(score_maxCombo_label, ZORDER_LABEL);
 
-	score_djLevel_label->setPosition(size_window.width / 2, size_window.height / 2 - 80);
-	this->addChild(score_djLevel_label);
+	score_djLevel_label->setPosition(UI_LABEL_DJLEVEL_X, UI_LABEL_DJLEVEL_Y);
+	score_djLevel_label->setColor(DJLEVEL_COLOR[score_djLevel]);
+	this->addChild(score_djLevel_label, ZORDER_LABEL);
 
-	score_count_label[JUDGE::PERFECT]->setPosition(size_window.width / 2, size_window.height / 2 - 100);
-	this->addChild(score_count_label[JUDGE::PERFECT]);
+	score_count_label[JUDGE::PERFECT]->setPosition(UI_LABEL_COUNT_X, UI_LABEL_COUNT_Y);
+	this->addChild(score_count_label[JUDGE::PERFECT], ZORDER_LABEL);
 
-	score_count_label[JUDGE::GREAT]->setPosition(size_window.width / 2, size_window.height / 2 - 120);
-	this->addChild(score_count_label[JUDGE::GREAT]);
+	score_count_label[JUDGE::GREAT]->setPosition(UI_LABEL_COUNT_X, UI_LABEL_COUNT_Y - 30);
+	this->addChild(score_count_label[JUDGE::GREAT], ZORDER_LABEL);
 
-	score_count_label[JUDGE::GOOD]->setPosition(size_window.width / 2, size_window.height / 2 - 140);
-	this->addChild(score_count_label[JUDGE::GOOD]);
+	score_count_label[JUDGE::GOOD]->setPosition(UI_LABEL_COUNT_X, UI_LABEL_COUNT_Y - 60);
+	this->addChild(score_count_label[JUDGE::GOOD], ZORDER_LABEL);
 
-	score_count_label[JUDGE::BAD]->setPosition(size_window.width / 2, size_window.height / 2 - 160);
-	this->addChild(score_count_label[JUDGE::BAD]);
+	score_count_label[JUDGE::BAD]->setPosition(UI_LABEL_COUNT_X, UI_LABEL_COUNT_Y - 90);
+	this->addChild(score_count_label[JUDGE::BAD], ZORDER_LABEL);
 
-	score_count_label[JUDGE::MISS]->setPosition(size_window.width / 2, size_window.height / 2 - 180);
-	this->addChild(score_count_label[JUDGE::MISS]);
+	score_count_label[JUDGE::MISS]->setPosition(UI_LABEL_COUNT_X, UI_LABEL_COUNT_Y - 120);
+	this->addChild(score_count_label[JUDGE::MISS], ZORDER_LABEL);
+
+	score_countUi_label[JUDGE::PERFECT]->setPosition(UI_LABEL_COUNTUI_X, UI_LABEL_COUNTUI_Y);
+	this->addChild(score_countUi_label[JUDGE::PERFECT], ZORDER_LABEL);
+
+	score_countUi_label[JUDGE::GREAT]->setPosition(UI_LABEL_COUNTUI_X, UI_LABEL_COUNTUI_Y - 30);
+	this->addChild(score_countUi_label[JUDGE::GREAT], ZORDER_LABEL);
+
+	score_countUi_label[JUDGE::GOOD]->setPosition(UI_LABEL_COUNTUI_X, UI_LABEL_COUNTUI_Y - 60);
+	this->addChild(score_countUi_label[JUDGE::GOOD], ZORDER_LABEL);
+
+	score_countUi_label[JUDGE::BAD]->setPosition(UI_LABEL_COUNTUI_X, UI_LABEL_COUNTUI_Y - 90);
+	this->addChild(score_countUi_label[JUDGE::BAD], ZORDER_LABEL);
+
+	score_countUi_label[JUDGE::MISS]->setPosition(UI_LABEL_COUNTUI_X, UI_LABEL_COUNTUI_Y - 120);
+	this->addChild(score_countUi_label[JUDGE::MISS], ZORDER_LABEL);
 
 	/* 레디 사운드 재생 */
 	SimpleAudioEngine::getInstance()->playEffect(SOUND_READY.c_str());
@@ -372,7 +400,7 @@ void GameScene::setNotes() {
 	cache->addImage(UI_SPRITE_EQUALIZER);
 	equalizer_sprite = Sprite::createWithTexture(cache->getTextureForKey(UI_SPRITE_EQUALIZER));
 	equalizer_sprite->setAnchorPoint(Point(0, 0));
-	equalizer_sprite->setPosition(Point(0, 0));
+	equalizer_sprite->setPosition(Point(0, JUDGE_HEIGHT + 5));
 	BlendFunc blend = { GL_ONE_MINUS_DST_COLOR, GL_ONE };
 	equalizer_sprite->setBlendFunc(blend);
 	note_sprite_background->addChild(equalizer_sprite);
@@ -395,7 +423,7 @@ void GameScene::setNotes() {
 	);
 	combo_label->setOpacity(0);
 	combo_label->enableOutline(Color4B::BLACK, 4);
-	note_sprite_background->addChild(combo_label);
+	note_sprite_background->addChild(combo_label, ZORDER_LABEL);
 	auto rgbRed = TintTo::create(0.05f, Color3B(255, 000, 051));
 	auto rgbGreen = TintTo::create(0.05f, Color3B(000, 204, 102));
 	auto rgbBlue = TintTo::create(0.05f, Color3B(051, 153, 255));
@@ -412,7 +440,7 @@ void GameScene::setNotes() {
 	);
 	combo_label_ui->setOpacity(0);
 	combo_label_ui->enableOutline(Color4B::BLACK, 4);
-	note_sprite_background->addChild(combo_label_ui);
+	note_sprite_background->addChild(combo_label_ui, ZORDER_LABEL);
 
 	judge_label = Label::createWithTTF("", JUDGE_FONT, JUDGE_FONTSIZE,
 		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
@@ -422,7 +450,7 @@ void GameScene::setNotes() {
 	);
 	judge_label->setOpacity(0);
 	judge_label->enableOutline(Color4B::BLACK, 4);
-	note_sprite_background->addChild(judge_label);
+	note_sprite_background->addChild(judge_label, ZORDER_LABEL);
 	rgbRed = TintTo::create(0.05f, Color3B(255, 000, 051));
 	rgbGreen = TintTo::create(0.05f, Color3B(000, 204, 102));
 	rgbBlue = TintTo::create(0.05f, Color3B(051, 153, 255));
@@ -439,7 +467,7 @@ void GameScene::setNotes() {
 	);
 	judge_time_label->setOpacity(0);
 	judge_time_label->enableOutline(Color4B::BLACK, 4);
-	note_sprite_background->addChild(judge_time_label);
+	note_sprite_background->addChild(judge_time_label, ZORDER_LABEL);
 
 #pragma endregion
 
@@ -448,8 +476,34 @@ void GameScene::setNotes() {
 	cache->addImage(UI_SPRITE_JUDGEBAR);
 	judgeBar_sprite = Sprite::createWithTexture(cache->getTextureForKey(UI_SPRITE_JUDGEBAR));
 	judgeBar_sprite->setPosition(Point(LAYER_WIDTH / 2, JUDGE_HEIGHT));
-	judgeBar_sprite->setOpacity(200);
+	judgeBar_sprite->setOpacity(OPACITY_JUDGEBAR);
 	layer_notes->addChild(judgeBar_sprite, ZORDER_BARS);
+
+#pragma endregion
+
+#pragma region 기타 레이아웃
+
+	/* 턴테이블 */
+	cache->addImage(UI_SPRITE_TURNTABLE);
+	turntable_sprite = Sprite::createWithTexture(cache->getTextureForKey(UI_SPRITE_TURNTABLE));
+	turntable_sprite->setPosition(Point(UI_SPRITE_TURNTABLE_X, UI_SPRITE_TURNTABLE_Y));
+	ui_sprite_background->addChild(turntable_sprite);
+	auto rotate = RotateBy::create(1.0f, 180);
+	rep = RepeatForever::create(rotate);
+	turntable_sprite->runAction(rep);
+
+	/* 턴 바 */
+	cache->addImage(UI_SPRITE_TURNBAR);
+	turnbar_sprite = Sprite::createWithTexture(cache->getTextureForKey(UI_SPRITE_TURNBAR));
+	turnbar_sprite->setPosition(Point(UI_SPRITE_TURNBAR_X, UI_SPRITE_TURNBAR_Y));
+	blend = { GL_ONE_MINUS_DST_COLOR, GL_ONE };
+	turnbar_sprite->setBlendFunc(blend);
+	ui_sprite_background->addChild(turnbar_sprite);
+	fi = FadeIn::create(0.3f);
+	ft = FadeTo::create(0.3f, 50);
+	seq = Sequence::create(fi, ft, nullptr);
+	rep = RepeatForever::create(seq);
+	turnbar_sprite->runAction(rep);
 
 #pragma endregion
 
@@ -891,7 +945,11 @@ void GameScene::tickOperate(float interval) {
 	time_bga -= pause_time_all;
 	currentTime = time_music.count();
 	currentTime_bga = time_bga.count();
-	label_time_music->setString("music_time : " + std::to_string(currentTime));
+
+	/* 곡 진행 시각 나타내기 */
+	int min = (int)currentTime / 60;
+	int sec = (int)currentTime % 60;
+	label_time_music->setString(std::to_string(min) + " : " + std::to_string(sec));
 
 	/* 현재 틱의 시각과 이전 틱의 시각과의 차이 */
 	double tick_diff = currentTime - prevTime;
@@ -901,21 +959,22 @@ void GameScene::tickOperate(float interval) {
 	yPosOffset += tick_diff * status_speed * status_bpm;
 
 	/* 현재 BPM 나타내기 */
-	label_bpm->setString("music_bpm : " + std::to_string(status_bpm));
+	label_bpm->setString(std::to_string((int)status_bpm));
 
 	/* 현재 Bar 번호 나타내기 */
 	label_bar->setString("music_bar : " + std::to_string(bar_iter_latest - 1));
 
 	/* 현재 곡 정보 나타내기 */
-	score_currentScore_label->setString("SCORE : " + std::to_string(score_currentScore));
+	score_currentScore_label->setString(std::to_string((int)score_currentScore));
 	score_currentCombo_label->setString("COMBO : " + std::to_string(score_currentCombo));
-	score_maxCombo_label->setString("MAX COMBO : " + std::to_string(score_maxCombo));
-	score_djLevel_label->setString("LEVEL : " + DJLEVEL_STR[score_djLevel]);
-	score_count_label[JUDGE::PERFECT]->setString("PERFECT : " + std::to_string(score_judgeCount[JUDGE::PERFECT]));
-	score_count_label[JUDGE::GREAT]->setString("GREAT : " + std::to_string(score_judgeCount[JUDGE::GREAT]));
-	score_count_label[JUDGE::GOOD]->setString("GOOD : " + std::to_string(score_judgeCount[JUDGE::GOOD]));
-	score_count_label[JUDGE::BAD]->setString("BAD : " + std::to_string(score_judgeCount[JUDGE::BAD]));
-	score_count_label[JUDGE::MISS]->setString("MISS : " + std::to_string(score_judgeCount[JUDGE::MISS]));
+	score_maxCombo_label->setString(std::to_string(score_maxCombo));
+	score_djLevel_label->setString(DJLEVEL_STR[score_djLevel]);
+	score_djLevel_label->setColor(DJLEVEL_COLOR[score_djLevel]);
+	score_count_label[JUDGE::PERFECT]->setString(std::to_string(score_judgeCount[JUDGE::PERFECT]));
+	score_count_label[JUDGE::GREAT]->setString(std::to_string(score_judgeCount[JUDGE::GREAT]));
+	score_count_label[JUDGE::GOOD]->setString(std::to_string(score_judgeCount[JUDGE::GOOD]));
+	score_count_label[JUDGE::BAD]->setString(std::to_string(score_judgeCount[JUDGE::BAD]));
+	score_count_label[JUDGE::MISS]->setString(std::to_string(score_judgeCount[JUDGE::MISS]));
 
 	/* iterator 시작점 설정 */
 	std::vector<NOTE::Note>::iterator cur_note = note_iter_latest;
@@ -1160,7 +1219,7 @@ void GameScene::changeSpeed(bool isSpeedUp) {
 	}
 
 	CCLOG("Changed speed : %lf", status_speed);
-	label_speed->setString("music_speed : " + std::to_string(status_speed));
+	label_speed->setString("x " + std::to_string((int)status_speed));
 	this->scheduleOnce(schedule_selector(GameScene::releaseKeyInput), 0.015f);
 }
 
@@ -1331,6 +1390,7 @@ void GameScene::operateComboEffect(std::vector<NOTE::Note>::iterator cur_note) {
 	if (judgeNo != JUDGE::MISS) {
 
 		/* 건반 이펙트 보이기 */
+		bomb_sprite[keyNo]->stopAllActions();
 		auto fi = FadeIn::create(0.0f);
 		auto foo = FadeOut::create(0.0f);
 		auto anim = Animation::create();
@@ -1341,7 +1401,6 @@ void GameScene::operateComboEffect(std::vector<NOTE::Note>::iterator cur_note) {
 		}
 		auto animate = Animate::create(anim);
 		auto seqan = Sequence::create(fi, animate, foo, nullptr);
-		bomb_sprite[keyNo]->stopAllActions();
 		bomb_sprite[keyNo]->runAction(seqan);
 
 		/* 점수 이펙트 보이기 */
@@ -1433,17 +1492,14 @@ int GameScene::calculateCombo(double judgeTime) {
 	score_currentSize++;
 
 	int ex_score = score_judgeCount[JUDGE::PERFECT] * 2 + score_judgeCount[JUDGE::GREAT];
-	CCLOG("ex_score : %d", ex_score);
 	int max_score = score_currentSize * 2;
 	double level_score = (double)ex_score / max_score;
-	CCLOG("level_score : %lf", level_score);
 	if (level_score >= 8.5 / 9) {
 		score_djLevel = 8;
 	}
 	else {
 		score_djLevel = level_score * 9;
 	}
-	CCLOG("score_djLevel : %d", score_djLevel);
 
 	return judgeNo;
 }

@@ -109,6 +109,11 @@ private:
 	const std::string DJLEVEL_STR[9] = {
 		"F", "E", "D", "C", "B", "A", "AA", "AAA", "S"
 	};
+	const Color3B DJLEVEL_COLOR[9] = {
+		Color3B(50,50,50), Color3B(100, 100, 100), Color3B(150,150,150),
+		Color3B(200,200,200), Color3B(200,200,0), Color3B(255,150,0),
+		Color3B(255,100,0), Color3B(255, 50, 0), Color3B(255, 0, 0)
+	};
 	enum DJLEVEL {
 		RANK_F, RANK_E, RANK_D, RANK_C, RANK_B, RANK_A, RANK_AA, RANK_AAA, RANK_S
 	};
@@ -116,11 +121,38 @@ private:
 	Label *combo_label_ui;								// 현재 콤보 UI 라벨
 	Label *judge_label;									// 현재 판정
 	Label *judge_time_label;							// 현재 판정시간 라벨
+	
 	Label *score_currentScore_label;					// 누적 점수 라벨
+	const int UI_LABEL_CURRENTSCORE_X = 117;			// 누적 점수 라벨 X
+	const int UI_LABEL_CURRENTSCORE_Y = 45;				// 누적 점수 라벨 Y
+	const std::string UI_LABEL_CURRENTSCORE_FONT
+		= "fonts/Teko-Bold.ttf";						// 현재 곡 BPM 폰트
+	const int UI_LABEL_CURRENTSCORE_FONTSIZE = 20;		// 현재 곡 BPM 폰트사이즈
+
 	Label *score_currentCombo_label;					// 현재 콤보 라벨
+
 	Label *score_maxCombo_label;						// 현재 맥스콤보 라벨
+	const int UI_LABEL_MAXCOMBO_X = 1085;				// 맥스 콤보 라벨 X
+	const int UI_LABEL_MAXCOMBO_Y = 45;					// 맥스 콤보 라벨 Y
+	const std::string UI_LABEL_MAXCOMBO_FONT
+		= "fonts/Teko-Bold.ttf";						// 현재 곡 BPM 폰트
+	const int UI_LABEL_MAXCOMBO_FONTSIZE = 20;			// 현재 곡 BPM 폰트사이즈
+
 	Label *score_count_label[5];						// 현재 판정
+	const int UI_LABEL_COUNT_X = 578;					// 현재 판정 X
+	const int UI_LABEL_COUNT_Y = 295;					// 현재 판정 Y
+
+	Label *score_countUi_label[5];
+	const int UI_LABEL_COUNTUI_X = 408;					// 현재 판정 UI X	
+	const int UI_LABEL_COUNTUI_Y = 295;					// 현재 판정 UI Y
+
 	Label *score_djLevel_label;							// DJ Level 라벨
+	const int UI_LABEL_DJLEVEL_X = 470;					// DJ Level X
+	const int UI_LABEL_DJLEVEL_Y = 118;					// DJ Level Y
+	const std::string UI_LABEL_DJLEVEL_FONT
+		= "fonts/Teko-Bold.ttf";						// 현재 곡 BPM 폰트
+	const int UI_LABEL_DJLEVEL_FONTSIZE = 60;			// 현재 곡 BPM 폰트사이즈
+
 	const std::string COMBO_FONT
 		= "fonts/Teko-Light.ttf";						// 콤보 폰트
 	const int COMBO_FONTSIZE = 200;						// 콤보 폰트사이즈
@@ -132,8 +164,8 @@ private:
 	const int JUDGE_FONTSIZE = 100;						// 저지 폰트사이즈
 	const int JUDGE_TIME_FONTSIZE = 25;					// 저지 타임 폰트사이즈
 	const std::string SYSTEMS_FONT
-		= "fonts/LuluMonospace.ttf";					// 시스템 폰트
-	const int SYSTEMS_FONTSIZE = 20;					// 시스템 폰트사이즈
+		= "fonts/Teko-Bold.ttf";						// 시스템 폰트
+	const int SYSTEMS_FONTSIZE = 22;					// 시스템 폰트사이즈
 	const float COMBO_ACTIONTIME = 0.02f;				// 콤보 액션 시간
 	const float COMBO_ACTIONDELAYTIME = 1.0f;			// 콤보 유지 시간
 	int score_currentScore;								// 누적 점수
@@ -190,7 +222,7 @@ private:
 	const std::string UI_SPRITE_MIDNOTE
 		= "images/game_note_mid.png";					// 중간 노트 스프라이트 파일
 	const std::string UI_SPRITE_BOMB
-		= "images/bomb.png";							// 노트 이펙트
+		= "images/bomb2.png";							// 노트 이펙트
 	const int UI_SPRITE_ANIM_BOMB_WIDTH = 181;			// 이펙트 가로 사이즈
 	const int UI_SPRITE_ANIM_BOMB_HEIGHT = 192;			// 이펙트 세로 사이즈
 	const std::string UI_SPRITE_EQUALIZER
@@ -199,11 +231,39 @@ private:
 		= "images/bars.png";							// 마디 스프라이트 파일
 	const std::string UI_SPRITE_JUDGEBAR
 		= "images/judgeBar.png";						// 판정선 스프라이트 파일
+	const std::string UI_SPRITE_TURNTABLE
+		= "images/turntable.png";						// 턴테이블 스프라이트 파일
+	const int UI_SPRITE_TURNTABLE_X = 87;				// 턴테이블 스프라이트 가로위치
+	const int UI_SPRITE_TURNTABLE_Y = 107;				// 턴테이블 스프라이트 세로위치
+	const std::string UI_SPRITE_TURNBAR
+		= "images/turnbar.png";							// 턴 바 스프라이트 파일
+	const int UI_SPRITE_TURNBAR_X = 443;				// 턴 바 스프라이트 가로위치
+	const int UI_SPRITE_TURNBAR_Y = 370;				// 턴 바 스프라이트 세로위치
 	const int OPACITY_NOTE_SPRITE_BACKGROUND = 225;		// 노트 배경 투명도 - BGA 영상을 뒤에 얼마나 보여줄 것인가
-	const int JUDGE_HEIGHT = 5;						// 판정 높이 조정
+	const int OPACITY_JUDGEBAR = 255;					// 판정선 투명도
+	const int JUDGE_HEIGHT = 5;							// 판정 높이 조정
+
 	Label *label_time_music;							// 곡 진행 시간 표시 라벨
+	const int UI_LABEL_TIMEMUSIC_X = 688;				// 곡 진행 시간 표시 X
+	const int UI_LABEL_TIMEMUSIC_Y = 27;				// 곡 진행 시간 표시 Y
+	const std::string UI_LABEL_TIMEMUSIC_FONT
+		= "fonts/Teko-Bold.ttf";						// 현재 곡 BPM 폰트
+	const int UI_LABEL_TIMEMUSIC_FONTSIZE = 20;			// 현재 곡 BPM 폰트사이즈
+
 	Label *label_speed;									// 현재 곡 배속 라벨
+	const int UI_LABEL_SPEED_X = 338;					// 현재 곡 배속 X
+	const int UI_LABEL_SPEED_Y = 27;					// 현재 곡 배속 Y
+	const std::string UI_LABEL_SPEED_FONT
+		= "fonts/Teko-Bold.ttf";						// 현재 곡 BPM 폰트
+	const int UI_LABEL_SPEED_FONTSIZE = 20;				// 현재 곡 BPM 폰트사이즈
+
 	Label *label_bpm;									// 현재 곡 BPM 라벨
+	const int UI_LABEL_BPM_X = 453;						// 현재 곡 BPM X
+	const int UI_LABEL_BPM_Y = 19;						// 현재 곡 BPM Y
+	const std::string UI_LABEL_BPM_FONT
+		= "fonts/Teko-Bold.ttf";						// 현재 곡 BPM 폰트
+	const int UI_LABEL_BPM_FONTSIZE = 20;				// 현재 곡 BPM 폰트사이즈
+
 	Label *label_bar;									// 현재 곡 Bar 라벨
 	Sprite *ui_sprite_background;						// 전체 배경 스프라이트
 	Sprite *note_sprite_background;						// 노트 배경 스프라이트
@@ -212,6 +272,8 @@ private:
 	Sprite *equalizer_sprite;							// 이퀄라이저 스프라이트
 	Sprite *bars_sprite[1000];							// 마디 스프라이트
 	Sprite *judgeBar_sprite;							// 판정선 스프라이트
+	Sprite *turntable_sprite;							// 턴테이블 스프라이트
+	Sprite *turnbar_sprite;								// 턴 바 스프라이트
 	//--------------------------------------------------------------------------------
 	// 노트 정보
 	std::vector<NOTE::Note> notes;						// 노트 정보(키채널 11 ~ 19)
@@ -222,12 +284,13 @@ private:
 	const int ZORDER_LAYOUT = 1;						// 레이아웃의 z order
 	const int ZORDER_NOTEBACKGROUND = 2;				// 노트 배경의 z order
 	const int ZORDER_BARS = 3;							// 노트 마디의 z order
+	const int ZORDER_LABEL = 5;							// 라벨의 z order
 
 	const int KEY_SIZE = 7;								// 키 사이즈 (7 키만 지원한다)
 
 	Layer *layer_notes;									// 노트 레이어(노트 스프라이트 붙일것)
 	const int LAYER_POSITIONX = 127;					// 노트 레이어 초기 x 위치
-	const int LAYER_POSITIONY = 134;					// 노트 레이어 초기 y 위치
+	const int LAYER_POSITIONY = 135;					// 노트 레이어 초기 y 위치
 	const int LAYER_WIDTH = 259;						// 노트 레이어 가로 사이즈
 	const int LAYER_HEIGHT = 584;						// 노트 레이어 세로 사이즈
 
