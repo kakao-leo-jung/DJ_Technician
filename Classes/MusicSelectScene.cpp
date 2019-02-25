@@ -449,13 +449,14 @@ void MusicSelectScene::setLayerMusicSelect() {
 		Sprite *tpSprite;
 		if (curHeader.getValues(MusicHeader::STAGEFILE).find(".bmp", 0, 4) != std::string::npos) {
 			/* bmp 파일일 때 */
-							/* 비트맵 확장자인 경우 파일을 파싱한다 */
+			/* 비트맵 확장자인 경우 파일을 파싱한다 */
 			CCLOG("parse BMP : %s", spritePath.c_str());
-			cv::Mat tpMat = cv::imread(spritePath, CV_LOAD_IMAGE_UNCHANGED);
+			//CV_LOAD_IMAGE_UNCHANGED;
+			cv::Mat tpMat = cv::imread(spritePath, CV_8UC3);
 			auto bga_texture = new Texture2D();
 			bga_texture->initWithData(tpMat.data,
 				tpMat.elemSize() * tpMat.cols * tpMat.rows,
-				Texture2D::PixelFormat::RGB888,
+				Texture2D::PixelFormat::I8,
 				tpMat.cols,
 				tpMat.rows,
 				Size(tpMat.cols, tpMat.rows));

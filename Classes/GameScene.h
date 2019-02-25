@@ -200,7 +200,7 @@ private:
 	const std::string UI_SPRITE_JUDGEBAR
 		= "images/judgeBar.png";						// 판정선 스프라이트 파일
 	const int OPACITY_NOTE_SPRITE_BACKGROUND = 225;		// 노트 배경 투명도 - BGA 영상을 뒤에 얼마나 보여줄 것인가
-	const int JUDGE_HEIGHT = 5;							// 판정 높이 조정
+	const int JUDGE_HEIGHT = 5;						// 판정 높이 조정
 	Label *label_time_music;							// 곡 진행 시간 표시 라벨
 	Label *label_speed;									// 현재 곡 배속 라벨
 	Label *label_bpm;									// 현재 곡 BPM 라벨
