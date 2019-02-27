@@ -291,7 +291,7 @@ void BMSManager::setNoteFromTmpVector(std::vector<int> st, int bar_no,
 
 #ifdef _DEBUG
 			NOTE::Note tpNote = notes->back();
-			CCLOG(" * read Note Info : \n obj:%c / key:%s / ch:%d / beat:%lf", tpNote.note_object, NOTE::STR_KEY[tpNote.note_key].c_str(), tpNote.note_channel, tpNote.note_beat);
+			CCLOG(" * read Note Info -- obj:%c / key:%s / ch:%d / beat:%lf", tpNote.note_object, NOTE::STR_KEY[tpNote.note_key].c_str(), tpNote.note_channel, tpNote.note_beat);
 #endif // _DEBUG
 
 		}
@@ -375,11 +375,15 @@ void BMSManager::readBms(std::string dirs, std::string fileName, double &status_
 #endif
 
 	FILE *fp = fopen(filePath.c_str(), "r");
-	char ch[1024];
+	char ch[4096];
 	while (!feof(fp)) {
 
 		/* 한 줄 (최대 1024) 읽어옴 */
 		fgets(ch, sizeof(ch), fp);
+
+#ifdef _DEBUG
+		CCLOG("* parseLine----------------------------------------\n %s", ch);
+#endif
 
 		/* bms 형식은 #으로 시작하는 것만 읽는다. */
 		if (ch[0] != '#') {

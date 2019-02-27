@@ -76,6 +76,10 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event) {
 		operateKeyEffect(KEY::L);
 		break;
 	case EventKeyboard::KeyCode::KEY_ENTER:
+		if (status_keyPressing[KEY::ALT]) {
+			changeScreenMode();
+			break;
+		}
 		if (status_playing == PLAY_STATUS::NOSTART) {
 			CCLOG("game start");
 			gameStart();
@@ -93,6 +97,8 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event) {
 	case EventKeyboard::KeyCode::KEY_ESCAPE:
 		operateESC();
 		break;
+	case EventKeyboard::KeyCode::KEY_ALT:
+		status_keyPressing[KEY::ALT] = true;
 	default:
 		break;
 	}
@@ -121,6 +127,9 @@ void GameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event *event) {
 		break;
 	case EventKeyboard::KeyCode::KEY_L:
 		endKeyEffect(0.0f, KEY::L);
+		break;
+	case EventKeyboard::KeyCode::KEY_ALT:
+		endKeyEffect(0.0f, KEY::ALT);
 		break;
 	default:
 		break;
@@ -758,7 +767,9 @@ void GameScene::setUiInfo() {
 	CCLOG("setting Background ...");
 	//auto winSize = Director::getInstance()->getOpenGLView()->getDesignResolutionSize();
 
-	ui_sprite_background = Sprite::create(UI_SPRITE_BACKGROUND);
+	cache->addImage(UI_SPRITE_BACKGROUND);
+
+	ui_sprite_background = Sprite::createWithTexture(cache->getTextureForKey(UI_SPRITE_BACKGROUND));
 	ui_sprite_background->setPosition(Point(size_window.width / 2, size_window.height / 2));
 	this->addChild(ui_sprite_background, ZORDER_LAYOUT);
 
@@ -834,6 +845,7 @@ void GameScene::tickOperateBGA() {
 
 				/* BGR 에서 RGB 컬러 변경 */
 				cv::cvtColor(video_frame, video_frame, CV_BGR2RGB);
+				
 
 				/* 텍스쳐 변환 */
 				CCLOG("Texture Setting.. %s", filePath.c_str());
@@ -1671,5 +1683,19 @@ void GameScene::releaseData() {
 	}
 	sound_system->release();
 	sound_system->close();
+
+}
+
+/* 전체화면 - 창모드 변환 */
+void GameScene::changeScreenMode() {
+
+	if (status_screenMode == SCREEN::FULLSCREEN) {
+		/* 전체화면 -> 창모드 */
+
+	}
+	else if (status_screenMode == SCREEN::WINDOW) {
+		/* 창모드 -> 전체화면 */
+
+	}
 
 }

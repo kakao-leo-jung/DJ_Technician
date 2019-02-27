@@ -17,6 +17,10 @@ private:
 	// 현재 윈도우 사이즈
 	Size size_window;									// 현재 윈도우의 사이즈
 	TextureCache *cache;								// 텍스쳐 캐시관리자
+	int status_screenMode;								// 현재 화면 모드
+	enum SCREEN {
+		WINDOW, FULLSCREEN
+	};
 	//--------------------------------------------------------------------------------
 	/* 사운드 관련 정보 */
 	const std::string SOUND_CHANGESPEED
@@ -39,9 +43,9 @@ private:
 
 	*/
 	bool status_keyUsing;								// 키 사용 여부(액션진행 중 키입력 방지)
-	bool status_keyPressing[8];							// 키 누름 지속 여부(1 - 7 키 까지)
+	bool status_keyPressing[50];						// 키 누름 지속 여부(1 - 7 키 까지)
 	enum KEY {
-		S = 1, D, F, SPACE, J, K = 8, L = 9
+		S = 1, D, F, SPACE, J, K = 8, L = 9, ALT
 	};
 	//--------------------------------------------------------------------------------
 	// 현재 곡 정보 (이전 MusicSelectScene 에서 넘긴다)
@@ -366,6 +370,8 @@ public:
 	void operatePauseMenu();
 	void goBackMusicSelectScene();
 	void releaseData();
+	void changeScreenMode();
+	void setFullscreen();
 
 	// implement the "static create()" method manually
 	CREATE_FUNC(GameScene);

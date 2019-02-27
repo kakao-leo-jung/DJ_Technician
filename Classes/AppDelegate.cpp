@@ -84,7 +84,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 	// set FPS. the default value is 1.0/60 if you don't call this
 	/* 최대 144fps 까지 지원 */
-	director->setAnimationInterval(1.0f / 144);
+	director->setAnimationInterval(1.0f / 200);
 
 	/* 화면 커서 설정 및 변경 */
 	glview->setCursorVisible(false);
