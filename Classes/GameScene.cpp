@@ -99,6 +99,15 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event) {
 		break;
 	case EventKeyboard::KeyCode::KEY_ALT:
 		status_keyPressing[KEY::ALT] = true;
+	case EventKeyboard::KeyCode::KEY_0:
+		/* BGA 끄기, 켜기 */
+		if (bga_sprite->isVisible()) {
+			bga_sprite->setVisible(false);
+		}
+		else {
+			bga_sprite->setVisible(true);
+		}
+		break;
 	default:
 		break;
 	}
@@ -845,7 +854,7 @@ void GameScene::tickOperateBGA() {
 
 				/* BGR 에서 RGB 컬러 변경 */
 				cv::cvtColor(video_frame, video_frame, CV_BGR2RGB);
-
+				
 				/* 텍스쳐 변환 */
 				CCLOG("Texture Setting.. %s", filePath.c_str());
 				delete bga_texture;

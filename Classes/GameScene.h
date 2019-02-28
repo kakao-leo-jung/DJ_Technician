@@ -187,7 +187,6 @@ private:
 	*/
 	const std::string UI_TEXTURE_NOBGA
 		= "images/noImage2.png";						// BGA 없을때 대체 텍스쳐
-	std::vector<Texture2D*> v_bga_bga[1296];			// BGA 텍스쳐 벡터(영상 각 프레임 텍스쳐를 보관한다.)
 	bool status_isVideo[1296];							// 현재 채널이 영상인지 이미지인지 구분
 	Sprite *bga_sprite;									// BGA 영상 스프라이트
 	Texture2D *bga_texture;								// BGA 영상 텍스쳐
