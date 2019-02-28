@@ -845,7 +845,6 @@ void GameScene::tickOperateBGA() {
 
 				/* BGR 에서 RGB 컬러 변경 */
 				cv::cvtColor(video_frame, video_frame, CV_BGR2RGB);
-				
 
 				/* 텍스쳐 변환 */
 				CCLOG("Texture Setting.. %s", filePath.c_str());
