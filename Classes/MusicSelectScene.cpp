@@ -130,7 +130,18 @@ void MusicSelectScene::onKeyHold(float interval) {
 
 		if (status_layer == STATUS::MUSICINFO) {
 			/* 현재 곡으로 게임 시작 */
-			startGame();
+			startGame(false);
+		}
+
+	}
+
+	/* F5 키 입력 */
+	if (std::find(heldKeys.begin(), heldKeys.end(), EventKeyboard::KeyCode::KEY_F5) != heldKeys.end()) {
+
+		/* 자동 연주 모드 */
+		if (status_layer == STATUS::MUSICINFO) {
+			/* 현재 곡으로 오토모드 시작 */
+			startGame(true);
 		}
 
 	}
@@ -1023,7 +1034,7 @@ void MusicSelectScene::changeMusicSelect(int from, int to) {
 }
 
 /* 게임 시작 */
-void MusicSelectScene::startGame() {
+void MusicSelectScene::startGame(bool autoMode) {
 
 	_KEYUSING;
 
@@ -1033,7 +1044,7 @@ void MusicSelectScene::startGame() {
 		musicHeaders[status_musicSelect].getValues(MusicHeader::DIR),
 		musicHeaders[status_musicSelect].getValues(MusicHeader::FILENAME),
 		1.0f,
-		true
+		autoMode
 	);
 	Director::getInstance()->replaceScene(TransitionFade::create(0.5f, musicSelectScene));
 

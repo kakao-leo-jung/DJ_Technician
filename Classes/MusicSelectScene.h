@@ -233,7 +233,7 @@ public:
 	void showMusicInfo();
 	void hideMusicInfo();
 	void changeMusicSelect(int from, int to);
-	void startGame();
+	void startGame(bool autoMode);
 	/* ----------------------------------------------------------------------------*/
 	// implement the "static create()" method manually
 	CREATE_FUNC(MusicSelectScene);
