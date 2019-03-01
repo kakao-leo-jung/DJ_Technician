@@ -78,9 +78,8 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event) {
 	case EventKeyboard::KeyCode::KEY_ENTER:
 		if (status_keyPressing[KEY::ALT]) {
 			changeScreenMode();
-			break;
 		}
-		if (status_playing == PLAY_STATUS::NOSTART) {
+		else if (status_playing == PLAY_STATUS::NOSTART) {
 			CCLOG("game start");
 			gameStart();
 		}
@@ -99,6 +98,7 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event) {
 		break;
 	case EventKeyboard::KeyCode::KEY_ALT:
 		status_keyPressing[KEY::ALT] = true;
+		break;
 	case EventKeyboard::KeyCode::KEY_0:
 		/* BGA 끄기, 켜기 */
 		if (bga_sprite->isVisible()) {
@@ -777,8 +777,8 @@ void GameScene::setUiInfo() {
 	//auto winSize = Director::getInstance()->getOpenGLView()->getDesignResolutionSize();
 
 	cache->addImage(UI_SPRITE_BACKGROUND);
-
 	ui_sprite_background = Sprite::createWithTexture(cache->getTextureForKey(UI_SPRITE_BACKGROUND));
+	ui_sprite_background->setContentSize(size_window);
 	ui_sprite_background->setPosition(Point(size_window.width / 2, size_window.height / 2));
 	this->addChild(ui_sprite_background, ZORDER_LAYOUT);
 
@@ -1317,7 +1317,10 @@ void GameScene::endKeyEffect(float interval, int keyNo) {
 	status_keyPressing[keyNo] = false;
 
 	/* 노트 이펙트 해제 */
-	keyPressed_sprite[keyNo]->setVisible(false);
+	if (keyNo < 10) {
+		keyPressed_sprite[keyNo]->setVisible(false);
+	}
+
 
 }
 
@@ -1697,13 +1700,13 @@ void GameScene::releaseData() {
 /* 전체화면 - 창모드 변환 */
 void GameScene::changeScreenMode() {
 
-	if (status_screenMode == SCREEN::FULLSCREEN) {
+	if (dynamic_cast<GLViewImpl*>(Director::getInstance()->getOpenGLView())->isFullscreen()) {
 		/* 전체화면 -> 창모드 */
-
+		dynamic_cast<GLViewImpl*>(Director::getInstance()->getOpenGLView())->setWindowed(1280, 720);
 	}
-	else if (status_screenMode == SCREEN::WINDOW) {
+	else {
 		/* 창모드 -> 전체화면 */
-
+		dynamic_cast<GLViewImpl*>(Director::getInstance()->getOpenGLView())->setFullscreen();
 	}
 
 }

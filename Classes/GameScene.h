@@ -17,10 +17,6 @@ private:
 	// 현재 윈도우 사이즈
 	Size size_window;									// 현재 윈도우의 사이즈
 	TextureCache *cache;								// 텍스쳐 캐시관리자
-	int status_screenMode;								// 현재 화면 모드
-	enum SCREEN {
-		WINDOW, FULLSCREEN
-	};
 	//--------------------------------------------------------------------------------
 	/* 사운드 관련 정보 */
 	const std::string SOUND_CHANGESPEED

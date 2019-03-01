@@ -33,6 +33,10 @@ private:
 	//--------------------------------------------------------------------------------
 	// 키 입력
 	bool status_keyUsing;											// 키 사용 여부(액션진행 중 키입력 방지)
+	bool status_keyPressed[1];										// 키 중복입력을 위한 확인
+	enum KEY {
+		ALT
+	};
 	std::vector<EventKeyboard::KeyCode> heldKeys;					// 키 입력 정보 저장
 	//--------------------------------------------------------------------------------
 	// 사운드 관련 변수
@@ -208,6 +212,7 @@ public:
 	void onMouseUp(cocos2d::Event* event);
 	void onMouseMove(cocos2d::Event* event);
 	void onMouseScroll(cocos2d::Event* event);
+	void changeScreenMode();
 	/* ----------------------------------------------------------------------------*/
 
 	/* -------------------------- SETTING FUNCTIONS -------------------------------*/

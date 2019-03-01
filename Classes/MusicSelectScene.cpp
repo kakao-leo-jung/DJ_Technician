@@ -30,12 +30,40 @@ static void problemLoading(const char* filename)
 
 /* 키 리스너 관련 함수 */
 void MusicSelectScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event) {
+
 	if (std::find(heldKeys.begin(), heldKeys.end(), keyCode) == heldKeys.end()) {
 		heldKeys.push_back(keyCode);
 	}
+
+	switch (keyCode) {
+	case EventKeyboard::KeyCode::KEY_ENTER:
+		if (status_keyPressed[KEY::ALT]) {
+			changeScreenMode();
+		}
+		break;
+	case EventKeyboard::KeyCode::KEY_ALT:
+		status_keyPressed[KEY::ALT] = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_ESCAPE:
+		Director::getInstance()->popScene();
+		break;
+	default:
+		break;
+	}
+
 }
 void MusicSelectScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event *event) {
+
 	heldKeys.erase(std::remove(heldKeys.begin(), heldKeys.end(), keyCode), heldKeys.end());
+
+	switch (keyCode) {
+	case EventKeyboard::KeyCode::KEY_ALT:
+		status_keyPressed[KEY::ALT] = false;
+		break;
+	default:
+		break;
+	}
+
 }
 void MusicSelectScene::onKeyHold(float interval) {
 
@@ -89,6 +117,11 @@ void MusicSelectScene::onKeyHold(float interval) {
 
 	/* ENTER 키 입력 */
 	if (std::find(heldKeys.begin(), heldKeys.end(), EventKeyboard::KeyCode::KEY_ENTER) != heldKeys.end()) {
+
+		/* alt 누른 상태일 경우 제외 */
+		if (status_keyPressed[KEY::ALT]) {
+			return;
+		}
 
 		if (status_layer == STATUS::MUSICSELECT) {
 			/* 곡 상세보기 레이어 진입 */
@@ -1009,4 +1042,18 @@ void MusicSelectScene::startGame() {
 /* 메인 BGM재생*/
 void MusicSelectScene::startBGM(float interval) {
 	AudioEngine::play2d(BGMMAIN_FILENAME, true, BGMMAIN_VOLUME);
+}
+
+/* 전체화면 - 창모드 변환 */
+void MusicSelectScene::changeScreenMode() {
+
+	if (dynamic_cast<GLViewImpl*>(Director::getInstance()->getOpenGLView())->isFullscreen()) {
+		/* 전체화면 -> 창모드 */
+		dynamic_cast<GLViewImpl*>(Director::getInstance()->getOpenGLView())->setWindowed(1280, 720);
+	}
+	else {
+		/* 창모드 -> 전체화면 */
+		dynamic_cast<GLViewImpl*>(Director::getInstance()->getOpenGLView())->setFullscreen();
+	}
+
 }

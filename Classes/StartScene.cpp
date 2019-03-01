@@ -31,12 +31,36 @@ static void problemLoading(const char* filename)
 
 /* 키 리스너 관련 함수 */
 void StartScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event) {
+
 	if (std::find(heldKeys.begin(), heldKeys.end(), keyCode) == heldKeys.end()) {
 		heldKeys.push_back(keyCode);
 	}
+
+	switch (keyCode) {
+	case EventKeyboard::KeyCode::KEY_ENTER:
+		if (status_keyPressed[KEY::ALT]) {
+			changeScreenMode();
+		}
+		break;
+	case EventKeyboard::KeyCode::KEY_ALT:
+		status_keyPressed[KEY::ALT] = true;
+		break;
+	default:
+		break;
+	}
+
 }
 void StartScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event *event) {
 	heldKeys.erase(std::remove(heldKeys.begin(), heldKeys.end(), keyCode), heldKeys.end());
+
+	switch (keyCode) {
+	case EventKeyboard::KeyCode::KEY_ALT:
+		status_keyPressed[KEY::ALT] = false;
+		break;
+	default:
+		break;
+	}
+
 }
 void StartScene::onKeyHold(float interval) {
 
@@ -91,6 +115,11 @@ void StartScene::onKeyHold(float interval) {
 	/* ENTER 키 입력 */
 	if (std::find(heldKeys.begin(), heldKeys.end(), EventKeyboard::KeyCode::KEY_ENTER) != heldKeys.end()) {
 		
+		/* alt 누른 상태일 경우 제외 */
+		if (status_keyPressed[KEY::ALT]) {
+			return;
+		}
+
 		/* PRESSANYKEY -> LOGIN 으로 LAYER 전환 */
 		if (status_layer == STATUS::PRESSANYKEY) {
 			enterLogin();
@@ -745,6 +774,7 @@ void StartScene::changeMenuSelectStatus(int from, int to, bool isEnterKey) {
 			break;
 		case MENUSELECTSTATUS::EXIT:
 			/* EXIT 함수 실행*/
+			Director::getInstance()->end();
 			break;
 		default:
 			break;
@@ -754,7 +784,7 @@ void StartScene::changeMenuSelectStatus(int from, int to, bool isEnterKey) {
 
 	/* 엔터키가 아닐때 범위 벗어날 경우 */
 	if (to == MENUSELECTSTATUS::SINGLEPLAY - 1 || to == MENUSELECTSTATUS::EXIT + 1) {
-		_KEYRELEASE(0.1f);
+		_KEYRELEASE(0.2f);
 		return;
 	}
 
@@ -779,7 +809,7 @@ void StartScene::changeMenuSelectStatus(int from, int to, bool isEnterKey) {
 	menuSelect_label[to]->runAction(rep);
 
 	/* 키 제한 해제 */
-	_KEYRELEASE(0.1f);
+	_KEYRELEASE(0.2f);
 
 }
 
@@ -942,10 +972,26 @@ void StartScene::enterSignUp() {
 
 }
 
+/* 곡 선택화면 진입 */
 void StartScene::goMusicSelectScene() {
 	
 	SimpleAudioEngine::getInstance()->playEffect(SOUND_CHANGELAYER);
 	AudioEngine::stopAll();
 	auto musicSelectScene = MusicSelectScene::createScene();
-	Director::getInstance()->replaceScene(TransitionFade::create(0.5f, musicSelectScene));
+	Director::getInstance()->pushScene(TransitionFade::create(0.5f, musicSelectScene));
+
+}
+
+/* 전체화면 - 창모드 변환 */
+void StartScene::changeScreenMode() {
+
+	if (dynamic_cast<GLViewImpl*>(Director::getInstance()->getOpenGLView())->isFullscreen()) {
+		/* 전체화면 -> 창모드 */
+		dynamic_cast<GLViewImpl*>(Director::getInstance()->getOpenGLView())->setWindowed(1280, 720);
+	}
+	else {
+		/* 창모드 -> 전체화면 */
+		dynamic_cast<GLViewImpl*>(Director::getInstance()->getOpenGLView())->setFullscreen();
+	}
+
 }

@@ -375,7 +375,7 @@ void BMSManager::readBms(std::string dirs, std::string fileName, double &status_
 #endif
 
 	FILE *fp = fopen(filePath.c_str(), "r");
-	char ch[4096];
+	char ch[8192];
 	while (!feof(fp)) {
 
 		/* 한 줄 (최대 1024) 읽어옴 */
