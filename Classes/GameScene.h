@@ -4,6 +4,8 @@
 #include "cocos2d.h"
 #include "opencv2/opencv.hpp"
 #include "BMSParser.h"
+#include "Score.h"
+#include "ResultScene.h"
 #include <chrono>
 #include <fmod.hpp>
 
@@ -57,9 +59,7 @@ private:
 	std::chrono::system_clock::time_point bga_start;	// BGA 시작 시간
 	std::chrono::duration<double> time_music;			// 곡 진행 시간
 	std::chrono::duration<double> time_bga;				// BGA 진행 시간
-
-	int score_noteSize;									// 전체 노트 개수(Max 콤보 수)
-
+	
 	std::vector<NOTE::Note>::iterator note_iter_latest;	// 가장 최신 노트
 	int bar_iter_latest;								// 가장 최신 마디번호
 	//--------------------------------------------------------------------------------
@@ -97,26 +97,7 @@ private:
 		판정 관련 변수
 
 	*/
-	const float JUDGE[5] = {
-		0.021f, 0.084f, 0.147f, 0.21f, 0.273f
-	};													// 판정 라인
-	const std::string JUDGE_STR[5] = {
-		"PERFECT", "GREAT",  "GOOD", "BAD", "MISS"
-	};													// 판정 STRING 값
-	enum JUDGE {
-		PERFECT, GREAT, GOOD, BAD, MISS
-	};
-	const std::string DJLEVEL_STR[9] = {
-		"F", "E", "D", "C", "B", "A", "AA", "AAA", "S"
-	};
-	const Color3B DJLEVEL_COLOR[9] = {
-		Color3B(50,50,50), Color3B(100, 100, 100), Color3B(150,150,150),
-		Color3B(200,200,200), Color3B(200,200,0), Color3B(255,150,0),
-		Color3B(255,100,0), Color3B(255, 50, 0), Color3B(255, 0, 0)
-	};
-	enum DJLEVEL {
-		RANK_F, RANK_E, RANK_D, RANK_C, RANK_B, RANK_A, RANK_AA, RANK_AAA, RANK_S
-	};
+
 	Label *combo_label;									// 현재 콤보 라벨
 	Label *combo_label_ui;								// 현재 콤보 UI 라벨
 	Label *judge_label;									// 현재 판정
@@ -168,12 +149,8 @@ private:
 	const int SYSTEMS_FONTSIZE = 22;					// 시스템 폰트사이즈
 	const float COMBO_ACTIONTIME = 0.02f;				// 콤보 액션 시간
 	const float COMBO_ACTIONDELAYTIME = 1.0f;			// 콤보 유지 시간
-	int score_currentScore;								// 누적 점수
-	int score_currentCombo;								// 현재 콤보
-	int score_maxCombo;									// 최대 콤보
-	int score_judgeCount[5];							// 누적 판정
-	int score_currentSize;								// 현재 누적 노트 수
-	int score_djLevel;									// 현재 DJ Level
+
+	Score score;										// 연주 유저의 점수 정보
 	//--------------------------------------------------------------------------------
 	//--------------------------------------------------------------------------------
 	/*
@@ -357,7 +334,6 @@ public:
 	void operateKeyEffect(int keyNo);
 	void endKeyEffect(float interval, int keyNo);
 	void operateComboEffect(std::vector<NOTE::Note>::iterator cur_note);
-	int calculateCombo(double judgeTime);
 	void tickOperateBGA();
 	void loadBGA();
 	void loadTexture();
@@ -366,7 +342,6 @@ public:
 	void goBackMusicSelectScene();
 	void releaseData();
 	void changeScreenMode();
-	void setFullscreen();
 
 	// implement the "static create()" method manually
 	CREATE_FUNC(GameScene);

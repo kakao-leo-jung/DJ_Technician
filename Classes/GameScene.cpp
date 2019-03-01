@@ -15,6 +15,7 @@
 USING_NS_CC;
 using namespace CocosDenshion;
 using namespace experimental;
+using namespace Judge;
 
 std::string mn; std::string bn;  float sp; bool ap;
 
@@ -224,7 +225,7 @@ void GameScene::enableKeySetting() {
 
 // 시작 데이터 불러오기
 void GameScene::initData() {
-	
+
 	/* 마디 변경 채널은 미리 1(4/4 박자)로 초기화 해놓는다. */
 	std::fill_n(notes_barLength, 1000, 1);
 
@@ -244,23 +245,23 @@ void GameScene::initData() {
 		Size(150, 50), TextHAlignment::CENTER, TextVAlignment::CENTER);
 	label_bar = Label::createWithTTF("music_bar : " + bar_iter_latest, SYSTEMS_FONT, SYSTEMS_FONTSIZE,
 		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
-	score_currentScore_label = Label::createWithTTF(std::to_string(score_currentScore), UI_LABEL_CURRENTSCORE_FONT, UI_LABEL_CURRENTSCORE_FONTSIZE,
+	score_currentScore_label = Label::createWithTTF(std::to_string(score.getCurrentScore()), UI_LABEL_CURRENTSCORE_FONT, UI_LABEL_CURRENTSCORE_FONTSIZE,
 		Size(150, 50), TextHAlignment::RIGHT, TextVAlignment::CENTER);
-	score_currentCombo_label = Label::createWithTTF("COMBO : "+std::to_string(score_currentCombo), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+	score_currentCombo_label = Label::createWithTTF("COMBO : "+std::to_string(score.getCurrentCombo()), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
 		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
-	score_maxCombo_label = Label::createWithTTF(std::to_string(score_maxCombo), UI_LABEL_MAXCOMBO_FONT, UI_LABEL_MAXCOMBO_FONTSIZE,
+	score_maxCombo_label = Label::createWithTTF(std::to_string(score.getMaxCombo()), UI_LABEL_MAXCOMBO_FONT, UI_LABEL_MAXCOMBO_FONTSIZE,
 		Size(150, 50), TextHAlignment::RIGHT, TextVAlignment::CENTER);
-	score_djLevel_label = Label::createWithTTF(DJLEVEL_STR[score_djLevel], UI_LABEL_DJLEVEL_FONT, UI_LABEL_DJLEVEL_FONTSIZE,
+	score_djLevel_label = Label::createWithTTF(DJLEVEL_STR[score.getDjLevel()], UI_LABEL_DJLEVEL_FONT, UI_LABEL_DJLEVEL_FONTSIZE,
 		Size(150, 50), TextHAlignment::CENTER, TextVAlignment::CENTER);
-	score_count_label[JUDGE::PERFECT] = Label::createWithTTF(std::to_string(score_judgeCount[JUDGE::PERFECT]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+	score_count_label[JUDGE::PERFECT] = Label::createWithTTF(std::to_string(score.getjudgeCount(JUDGE::PERFECT)), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
 		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
-	score_count_label[JUDGE::GREAT] = Label::createWithTTF(std::to_string(score_judgeCount[JUDGE::GREAT]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+	score_count_label[JUDGE::GREAT] = Label::createWithTTF(std::to_string(score.getjudgeCount(JUDGE::GREAT)), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
 		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
-	score_count_label[JUDGE::GOOD] = Label::createWithTTF(std::to_string(score_judgeCount[JUDGE::GOOD]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+	score_count_label[JUDGE::GOOD] = Label::createWithTTF(std::to_string(score.getjudgeCount(JUDGE::GOOD)), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
 		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
-	score_count_label[JUDGE::BAD] = Label::createWithTTF(std::to_string(score_judgeCount[JUDGE::BAD]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+	score_count_label[JUDGE::BAD] = Label::createWithTTF(std::to_string(score.getjudgeCount(JUDGE::BAD)), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
 		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
-	score_count_label[JUDGE::MISS] = Label::createWithTTF(std::to_string(score_judgeCount[JUDGE::MISS]), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
+	score_count_label[JUDGE::MISS] = Label::createWithTTF(std::to_string(score.getjudgeCount(JUDGE::MISS)), SYSTEMS_FONT, SYSTEMS_FONTSIZE,
 		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
 	score_countUi_label[JUDGE::PERFECT] = Label::createWithTTF("PERFECT", SYSTEMS_FONT, SYSTEMS_FONTSIZE,
 		Size(150, 50), TextHAlignment::RIGHT, TextVAlignment::CENTER);
@@ -298,7 +299,7 @@ void GameScene::initData() {
 	this->addChild(score_maxCombo_label, ZORDER_LABEL);
 
 	score_djLevel_label->setPosition(UI_LABEL_DJLEVEL_X, UI_LABEL_DJLEVEL_Y);
-	score_djLevel_label->setColor(DJLEVEL_COLOR[score_djLevel]);
+	score_djLevel_label->setColor(DJLEVEL_COLOR[score.getDjLevel()]);
 	this->addChild(score_djLevel_label, ZORDER_LABEL);
 
 	score_count_label[JUDGE::PERFECT]->setPosition(UI_LABEL_COUNT_X, UI_LABEL_COUNT_Y);
@@ -613,7 +614,7 @@ void GameScene::setNotes() {
 		/* 실 노트 개수 카운트 - 일단 스크래치는 콤보에서 제외 */
 		if (cur_note->note_object == NOTE::OBJ_NOTE && cur_note->note_key <= NOTE::KEY_7
 			&& cur_note->note_key >= NOTE::KEY_1 && cur_note->note_key != NOTE::KEY_SCRATCH) {
-			score_noteSize++;
+			score.plusNoteSize();
 		}
 
 		/* 스프라이트 세팅 */
@@ -803,7 +804,6 @@ void GameScene::gameStart() {
 	time_start = std::chrono::system_clock::now();
 	bga_start = std::chrono::system_clock::now();
 
-
 	/* BGA 변화 초기화 */
 	status_bgaCh = 0;
 
@@ -893,7 +893,6 @@ void GameScene::tickOperateBGA() {
 				bga_texture = Director::getInstance()->getTextureCache()->getTextureForKey(filePath);
 			}
 
-
 			/* 이미지 애니메이션이 돌아가지 않는다면 여기서 더 코딩 해주어야함 
 			
 				1. bga_texture가 업데이트 되지 않아서 수동으로 스프라이트를 갱신해 주어야 하거나
@@ -914,7 +913,7 @@ void GameScene::tickOperateBGA() {
 		if (status_isVideo[status_bga]) {
 			/* 동영상일 경우 재생 */
 			/* 아직 다음 프레임의 시간에 도달하지 않았으면 리턴한다 */
-			double nextFrameTime = video_capture.get(CV_CAP_PROP_POS_MSEC) / 1000;
+			double nextFrameTime = video_capture.get(CV_CAP_PROP_POS_MSEC) / 1000.0;
 			if (nextFrameTime > currentTime_bga) {
 				return;
 			}
@@ -940,7 +939,6 @@ void GameScene::tickOperateBGA() {
 			}
 		}
 
-		
 	}
 }
 
@@ -985,16 +983,16 @@ void GameScene::tickOperate(float interval) {
 	label_bar->setString("music_bar : " + std::to_string(bar_iter_latest - 1));
 
 	/* 현재 곡 정보 나타내기 */
-	score_currentScore_label->setString(std::to_string((int)score_currentScore));
-	score_currentCombo_label->setString("COMBO : " + std::to_string(score_currentCombo));
-	score_maxCombo_label->setString(std::to_string(score_maxCombo));
-	score_djLevel_label->setString(DJLEVEL_STR[score_djLevel]);
-	score_djLevel_label->setColor(DJLEVEL_COLOR[score_djLevel]);
-	score_count_label[JUDGE::PERFECT]->setString(std::to_string(score_judgeCount[JUDGE::PERFECT]));
-	score_count_label[JUDGE::GREAT]->setString(std::to_string(score_judgeCount[JUDGE::GREAT]));
-	score_count_label[JUDGE::GOOD]->setString(std::to_string(score_judgeCount[JUDGE::GOOD]));
-	score_count_label[JUDGE::BAD]->setString(std::to_string(score_judgeCount[JUDGE::BAD]));
-	score_count_label[JUDGE::MISS]->setString(std::to_string(score_judgeCount[JUDGE::MISS]));
+	score_currentScore_label->setString(std::to_string((int)score.getCurrentScore()));
+	score_currentCombo_label->setString("COMBO : " + std::to_string(score.getCurrentCombo()));
+	score_maxCombo_label->setString(std::to_string(score.getMaxCombo()));
+	score_djLevel_label->setString(DJLEVEL_STR[score.getDjLevel()]);
+	score_djLevel_label->setColor(DJLEVEL_COLOR[score.getDjLevel()]);
+	score_count_label[JUDGE::PERFECT]->setString(std::to_string(score.getjudgeCount(JUDGE::PERFECT)));
+	score_count_label[JUDGE::GREAT]->setString(std::to_string(score.getjudgeCount(JUDGE::GREAT)));
+	score_count_label[JUDGE::GOOD]->setString(std::to_string(score.getjudgeCount(JUDGE::GOOD)));
+	score_count_label[JUDGE::BAD]->setString(std::to_string(score.getjudgeCount(JUDGE::BAD)));
+	score_count_label[JUDGE::MISS]->setString(std::to_string(score.getjudgeCount(JUDGE::MISS)));
 
 	/* iterator 시작점 설정 */
 	std::vector<NOTE::Note>::iterator cur_note = note_iter_latest;
@@ -1021,6 +1019,13 @@ void GameScene::tickOperate(float interval) {
 		}
 
 		cur_bar++;
+	}
+
+	/* 곡 재생 완료 - tick 중단 */
+	if (notes.back().note_beat + 8 < bar_iter_latest) {
+		status_playing = PLAY_STATUS::PAUSED;
+		auto resultScene = ResultScene::createScene(score);
+		Director::getInstance()->replaceScene(TransitionFade::create(0.5f, resultScene));
 	}
 
 	/* 노트를 순회하면서 위치 값을 구한다. */
@@ -1365,7 +1370,7 @@ void GameScene::operateComboEffect(std::vector<NOTE::Note>::iterator cur_note) {
 	CCLOG("Perfect Checked : %d, %d", cur_note->isChecked, cur_note->note_key);
 
 	/* 콤보 점수 산정 */
-	int judgeNo = calculateCombo(judgeTime);
+	int judgeNo = score.calculateCombo(judgeTime);
 
 	/*
 
@@ -1427,7 +1432,7 @@ void GameScene::operateComboEffect(std::vector<NOTE::Note>::iterator cur_note) {
 		bomb_sprite[keyNo]->runAction(seqan);
 
 		/* 점수 이펙트 보이기 */
-		combo_label->setString(std::to_string(score_currentCombo));
+		combo_label->setString(std::to_string(score.getCurrentCombo()));
 		combo_label->setPosition(LAYER_WIDTH / 2, note_sprite_background->getContentSize().height / 8 * 5);
 		mov = MoveBy::create(0.0f, Point(0, -10));
 		mov1 = MoveBy::create(COMBO_ACTIONTIME, Point(0, 10));
@@ -1455,76 +1460,6 @@ void GameScene::operateComboEffect(std::vector<NOTE::Note>::iterator cur_note) {
 		combo_label->setOpacity(0);
 	}
 
-}
-
-/* 주어진 판정시간에 대한 판정을 리턴하고 점수를 산정한다 */
-int GameScene::calculateCombo(double judgeTime) {
-	
-	/* 판정 값 */
-	int judgeNo;
-
-	/* 점수 산정용 변수 */
-	double plusScore = 0;
-	double b = 100000.0 / score_noteSize;
-	double v = 50000.0 / (10 * score_noteSize - 55);
-
-	if (judgeTime >= -JUDGE[JUDGE::PERFECT] && judgeTime <= JUDGE[JUDGE::PERFECT]) {
-		/* 퍼펙트 +- 0.15f 이내 */
-		judgeNo = JUDGE::PERFECT;
-		score_currentCombo = (score_currentCombo == score_maxCombo)
-			? score_maxCombo = score_currentCombo + 1 : score_currentCombo + 1;
-		
-		/* 점수 산정 */
-		int offset = (score_currentCombo <= 10) ? score_currentCombo - 1 : 10;	
-		plusScore = 1.5 * b + offset * v;
-		
-	}
-	else if (judgeTime >= -JUDGE[JUDGE::GREAT] && judgeTime <= JUDGE[JUDGE::GREAT]) {
-		/* 그레이트 */
-		judgeNo = JUDGE::GREAT;
-		score_currentCombo = (score_currentCombo == score_maxCombo)
-			? score_maxCombo = score_currentCombo + 1 : score_currentCombo + 1;
-
-		/* 점수 산정 */
-		int offset = (score_currentCombo <= 10) ? score_currentCombo - 1 : 10;
-		plusScore = 1.0 * b + offset * v;
-	}
-	else if (judgeTime >= -JUDGE[JUDGE::GOOD] && judgeTime <= JUDGE[JUDGE::GOOD]) {
-		/* 굿 +- 0.3f 이내 */
-		judgeNo = JUDGE::GOOD;
-		score_currentCombo = (score_currentCombo == score_maxCombo)
-			? score_maxCombo = score_currentCombo + 1 : score_currentCombo + 1;
-
-		/* 점수 산정 */
-		int offset = (score_currentCombo <= 10) ? score_currentCombo - 1 : 10;
-		plusScore = 0.2 * b + offset * v;
-	}
-	else if (judgeTime >= -JUDGE[JUDGE::BAD] && judgeTime <= JUDGE[JUDGE::BAD]) {
-		/* 배드 +- 0.4f 이내 */
-		judgeNo = JUDGE::BAD;
-		score_currentCombo = 0;
-	}
-	else if (judgeTime < -JUDGE[JUDGE::BAD]) {
-		/* 미스 - 0.4f 초과 */
-		judgeNo = JUDGE::MISS;
-		score_currentCombo = 0;
-	}
-
-	score_judgeCount[judgeNo]++;
-	score_currentScore += plusScore;
-	score_currentSize++;
-
-	int ex_score = score_judgeCount[JUDGE::PERFECT] * 2 + score_judgeCount[JUDGE::GREAT];
-	int max_score = score_currentSize * 2;
-	double level_score = (double)ex_score / max_score;
-	if (level_score >= 8.5 / 9) {
-		score_djLevel = 8;
-	}
-	else {
-		score_djLevel = level_score * 9;
-	}
-
-	return judgeNo;
 }
 
 /* BGA 관련 정보 로드 */

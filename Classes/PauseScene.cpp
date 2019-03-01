@@ -1,7 +1,5 @@
 #include "PauseScene.h"
 
-#define KEY_USINGSET if (status_keyUsing) return; status_keyUsing = true
-
 USING_NS_CC;
 using namespace CocosDenshion;
 
