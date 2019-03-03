@@ -1041,8 +1041,7 @@ void MusicSelectScene::startGame(bool autoMode) {
 	SimpleAudioEngine::getInstance()->playEffect(SOUND_CHANGELAYER);
 	AudioEngine::stopAll();
 	auto musicSelectScene = GameScene::createScene(
-		musicHeaders[status_musicSelect].getValues(MusicHeader::DIR),
-		musicHeaders[status_musicSelect].getValues(MusicHeader::FILENAME),
+		musicHeaders[status_musicSelect],
 		1.0f,
 		autoMode
 	);

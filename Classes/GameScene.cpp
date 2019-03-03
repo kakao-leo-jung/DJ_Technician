@@ -18,11 +18,13 @@ using namespace experimental;
 using namespace Judge;
 
 std::string mn; std::string bn;  float sp; bool ap;
+MusicHeader m_info;
 
 //scene 생성
-Scene* GameScene::createScene(std::string dirs, std::string bmsName, float speed, bool autoPlay)
+Scene* GameScene::createScene(MusicHeader header, float speed, bool autoPlay)
 {
-	mn = dirs; sp = speed; bn = bmsName; ap = autoPlay;
+	m_info = header;
+	mn = header.getValues(MusicHeader::DIR); sp = speed; bn = header.getValues(MusicHeader::FILENAME); ap = autoPlay;
 	CCLOG("GameScene::createScene()..");
 	auto scene = Scene::create();
 	auto layer = GameScene::create();
@@ -228,6 +230,9 @@ void GameScene::initData() {
 
 	/* 마디 변경 채널은 미리 1(4/4 박자)로 초기화 해놓는다. */
 	std::fill_n(notes_barLength, 1000, 1);
+
+	/* 헤더정보 저장 */
+	music_header = m_info;
 
 	/* BMS 로드 */
 	BMSManager::getInstance()->readBms(status_dirs, status_bmsName, status_bpm,
@@ -1024,7 +1029,7 @@ void GameScene::tickOperate(float interval) {
 	/* 곡 재생 완료 - tick 중단 */
 	if (notes.back().note_beat + 8 < bar_iter_latest) {
 		status_playing = PLAY_STATUS::PAUSED;
-		auto resultScene = ResultScene::createScene(score);
+		auto resultScene = ResultScene::createScene(music_header, score);
 		Director::getInstance()->replaceScene(TransitionFade::create(0.5f, resultScene));
 	}
 

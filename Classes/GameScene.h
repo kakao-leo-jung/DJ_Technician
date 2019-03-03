@@ -6,6 +6,7 @@
 #include "BMSParser.h"
 #include "Score.h"
 #include "ResultScene.h"
+#include "MusicHeader.h"
 #include <chrono>
 #include <fmod.hpp>
 
@@ -47,6 +48,7 @@ private:
 	};
 	//--------------------------------------------------------------------------------
 	// 현재 곡 정보 (이전 MusicSelectScene 에서 넘긴다)
+	MusicHeader music_header;							// 현재 bms 파일 헤더정보
 	std::string status_bmsName;							// 현재 bms 파일 이름
 	std::string status_dirs;							// 현재 bms 디렉터리 이름
 	float status_speed;									// 현재 곡 배속(변경가능)
@@ -314,7 +316,7 @@ private:
 
 public:
 
-	static cocos2d::Scene* createScene(std::string musicName, std::string bmsName, float speed, bool autoPlay);
+	static cocos2d::Scene* createScene(MusicHeader header, float speed, bool autoPlay);
 
 	virtual bool init();
 	virtual void onEnterTransitionDidFinish();
@@ -325,7 +327,6 @@ public:
 	void enableKeySetting();
 	void initData();
 	void setNotes();
-	void parseBMS();
 	void setUiInfo();
 	void gameStart();
 	void tickOperate(float interval);

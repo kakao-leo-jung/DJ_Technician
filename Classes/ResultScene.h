@@ -5,6 +5,7 @@
 #include "SimpleAudioEngine.h"
 #include "Score.h"
 #include "opencv2/opencv.hpp"
+#include "MusicHeader.h"
 
 USING_NS_CC;
 
@@ -38,15 +39,51 @@ private:
 	//--------------------------------------------------------------------------------
 	/*
 
-		점수 관련 설정
+		점수, 곡 관련 정보
 
 	*/
+	MusicHeader music_header;										// 곡 헤더 정보
+	int total_score;												// 토탈 스코어 정보
 	Score score;													// 기본 스코어 - GameScene에서 넘겨받는다.
+	//--------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------
+	/*
+
+		UI 관련 설정
+
+	*/
+
+	const std::string UI_LABEL_TITLE_FONT
+		= "fonts/LuluMonospace.ttf";								// UI 타이틀 폰트
+	const int UI_LABEL_TITLE_FONTSIZE = 60;							// UI 타이틀 폰트 사이즈
+	const std::string UI_LABEL_DJLEVEL_FONT
+		= "fonts/swagger.ttf";										// UI djLevel 폰트
+	const int UI_LABEL_DJLEVEL_FONTSIZE = 100;						// UI djLevel 폰트 사이즈
+	const std::string UI_LABEL_SYSTEM_FONT
+		= "fonts/nanumLight.ttf";									// UI 일반시스템 폰트
+	const int UI_LABEL_SYSTEM_FONTSIZE = 20;						// UI 일반시스템 폰트 사이즈
+	const int UI_LABEL_SYSTEMSCORE_FONTSIZE = 40;					// UI 일반시스템 스코어 폰트 사이즈
+
+	const std::string RECTBACKGROUND_FILENAME
+		= "images/result_background.png";							// 검은 배경 스프라이트 파일
+	Sprite *rectBackground_sprite;									// 검은 배경 스프라이트
+	const int RECTBACKGROUND_OPACITY = 100;							// 검은 배경 투명도
+
+	Sprite *music_sprite;											// 곡 스프라이트
+	Label *title_label;												// 곡 제목 라벨
+	Label *djLevel_label;											// djLevel 라벨
+	Label *info_label;												// 곡 정보 라벨
+	Label *score_label;												// 점수 라벨
+	Label *maxCombo_label;											// 맥스콤보 라벨
+	Label *maxCombo_label_ui;										// 맥스콤보 ui 라벨
+	Label *judgeCount_label[5];										// 저지카운트 라벨
+	Label *judgeCount_label_ui[5];									// 저지카운트 ui 라벨
+
 	//--------------------------------------------------------------------------------
 
 public:
 
-	static cocos2d::Scene* createScene(Score score);
+	static cocos2d::Scene* createScene(MusicHeader header, Score score);
 
 	virtual bool init();
 	virtual void onEnterTransitionDidFinish();
@@ -59,6 +96,7 @@ public:
 	void setUiInfo();
 	void setLayerBasicLayer();
 	void background_tick(float interval);
+	void calculateScore();
 
 	// implement the "static create()" method manually
 	CREATE_FUNC(ResultScene);

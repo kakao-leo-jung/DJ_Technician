@@ -36,6 +36,19 @@ public:
 	std::string getValues(int valueIdx);
 	void setValues(int valueIdx, std::string val);
 
+	/* Operater ¿¬»ê */
+	MusicHeader& operator=(MusicHeader &header) {
+		
+		int i = 0;
+		while (i < valueSize) {
+			this->setValues(i, header.getValues(i));
+			i++;
+		}
+
+		return *this;
+
+	}
+
 };
 
 #endif
