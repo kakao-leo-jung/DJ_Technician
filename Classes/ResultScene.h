@@ -6,6 +6,7 @@
 #include "Score.h"
 #include "opencv2/opencv.hpp"
 #include "MusicHeader.h"
+#include "MusicSelectScene.h"
 
 USING_NS_CC;
 
@@ -58,7 +59,7 @@ private:
 	const int UI_LABEL_TITLE_FONTSIZE = 60;							// UI 타이틀 폰트 사이즈
 	const std::string UI_LABEL_DJLEVEL_FONT
 		= "fonts/swagger.ttf";										// UI djLevel 폰트
-	const int UI_LABEL_DJLEVEL_FONTSIZE = 100;						// UI djLevel 폰트 사이즈
+	const int UI_LABEL_DJLEVEL_FONTSIZE = 250;						// UI djLevel 폰트 사이즈
 	const std::string UI_LABEL_SYSTEM_FONT
 		= "fonts/nanumLight.ttf";									// UI 일반시스템 폰트
 	const int UI_LABEL_SYSTEM_FONTSIZE = 20;						// UI 일반시스템 폰트 사이즈
@@ -67,7 +68,7 @@ private:
 	const std::string RECTBACKGROUND_FILENAME
 		= "images/result_background.png";							// 검은 배경 스프라이트 파일
 	Sprite *rectBackground_sprite;									// 검은 배경 스프라이트
-	const int RECTBACKGROUND_OPACITY = 100;							// 검은 배경 투명도
+	const int RECTBACKGROUND_OPACITY = 200;							// 검은 배경 투명도
 
 	Sprite *music_sprite;											// 곡 스프라이트
 	Label *title_label;												// 곡 제목 라벨
@@ -96,7 +97,10 @@ public:
 	void setUiInfo();
 	void setLayerBasicLayer();
 	void background_tick(float interval);
+
+	/* function */
 	void calculateScore();
+	void enterOperate();
 
 	// implement the "static create()" method manually
 	CREATE_FUNC(ResultScene);

@@ -29,8 +29,8 @@ void ResultScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event) {
 
 	switch (keyCode) {
 	case EventKeyboard::KeyCode::KEY_ENTER:
-		/* 현재 선택 오퍼레이트 */
-
+		/* select scene으로 넘어가기 */
+		enterOperate();
 		break;
 	default:
 		break;
@@ -85,7 +85,7 @@ void ResultScene::initData() {
 void ResultScene::calculateScore() {
 
 	/* 여기서 total_score 를 산정한다 */
-
+	total_score = score.getCurrentScore();
 
 }
 
@@ -97,20 +97,21 @@ void ResultScene::setUiInfo() {
 	/* 검은 바탕 레이어 생성 */
 	cache->addImage(RECTBACKGROUND_FILENAME);
 	rectBackground_sprite = Sprite::createWithTexture(cache->getTextureForKey(RECTBACKGROUND_FILENAME));
-	rectBackground_sprite->setPosition(size_window.width / 2, size_window.height / 2);
+	rectBackground_sprite->setAnchorPoint(Point(0, 0));
+	rectBackground_sprite->setPosition(0,0);
 	rectBackground_sprite->setOpacity(RECTBACKGROUND_OPACITY);
 	this->addChild(rectBackground_sprite);
 
 	/* 타이틀 라벨 생성 */
 	title_label = Label::createWithTTF(music_header.getValues(MusicHeader::TITLE), UI_LABEL_TITLE_FONT, UI_LABEL_TITLE_FONTSIZE,
-		Size(size_window.width, 100), TextHAlignment::CENTER, TextVAlignment::CENTER);
+		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
 	title_label->setPosition(size_window.width / 2, size_window.height - 100);
 	rectBackground_sprite->addChild(title_label);
 
 	/* DjLevel 라벨 생성 */
 	djLevel_label = Label::createWithTTF(Judge::DJLEVEL_STR[score.getDjLevel()], UI_LABEL_DJLEVEL_FONT, UI_LABEL_DJLEVEL_FONTSIZE,
-		Size(size_window.width / 2, size_window.height / 2), TextHAlignment::CENTER, TextVAlignment::CENTER);
-	djLevel_label->setPosition(size_window.width / 4, size_window.height / 16 * 9);
+		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+	djLevel_label->setPosition(size_window.width / 4, size_window.height / 16 * 11);
 	djLevel_label->setColor(Judge::DJLEVEL_COLOR[score.getDjLevel()]);
 	rectBackground_sprite->addChild(djLevel_label);
 
@@ -121,29 +122,29 @@ void ResultScene::setUiInfo() {
 	//music_sprite->setPosition(size_window.width / 4 * 3, size_window.height / 16 * 9);
 	//music_sprite->setContentSize(Size(256, 256));
 	//rectBackground_sprite->addChild(music_sprite);
-	
-	/* info 라벨 생성 */
-	info_label = Label::createWithTTF("* Score Information", UI_LABEL_SYSTEM_FONT, UI_LABEL_SYSTEM_FONTSIZE,
-		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
-	info_label->setPosition(size_window.width / 8, size_window.height / 2);
-	rectBackground_sprite->addChild(info_label);
 
 	/* score 라벨 생성 */
 	score_label = Label::createWithTTF(std::to_string(total_score), UI_LABEL_SYSTEM_FONT, UI_LABEL_SYSTEMSCORE_FONTSIZE,
-		Size(300, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
-	score_label->setPosition(size_window.width / 8, size_window.height / 2 - 50);
+		Size(), TextHAlignment::CENTER, TextVAlignment::CENTER);
+	score_label->setPosition(size_window.width / 4, size_window.height / 16*11 - 70);
 	rectBackground_sprite->addChild(score_label);
+
+	/* info 라벨 생성 */
+	info_label = Label::createWithTTF("SCORE INFORMATION", UI_LABEL_SYSTEM_FONT, UI_LABEL_SYSTEM_FONTSIZE + 10,
+		Size(), TextHAlignment::LEFT, TextVAlignment::CENTER);
+	info_label->setPosition(size_window.width / 4, size_window.height / 16 * 11 - 90);
+	rectBackground_sprite->addChild(info_label);
 
 	/* max 콤보 ui 라벨 생성 */
 	maxCombo_label_ui = Label::createWithTTF("MAX", UI_LABEL_SYSTEM_FONT, UI_LABEL_SYSTEM_FONTSIZE,
 		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
-	maxCombo_label_ui->setPosition(size_window.width / 8, size_window.height / 2 - 80);
+	maxCombo_label_ui->setPosition(size_window.width / 4, size_window.height / 2 - 90);
 	rectBackground_sprite->addChild(maxCombo_label_ui);
 
 	/* max 콤보 라벨 생성 */
-	maxCombo_label = Label::createWithTTF(": " + std::to_string(score.getMaxCombo()), UI_LABEL_SYSTEM_FONT, UI_LABEL_SYSTEM_FONTSIZE,
+	maxCombo_label = Label::createWithTTF(":   " + std::to_string(score.getMaxCombo()), UI_LABEL_SYSTEM_FONT, UI_LABEL_SYSTEM_FONTSIZE,
 		Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
-	maxCombo_label->setPosition(size_window.width / 8 + 100, size_window.height / 2 - 80);
+	maxCombo_label->setPosition(size_window.width / 4 + 150, size_window.height / 2 - 80);
 	rectBackground_sprite->addChild(maxCombo_label);
 
 	/* judgeCount 라벨 생성 */
@@ -151,13 +152,13 @@ void ResultScene::setUiInfo() {
 	while (i < 5) {
 		
 		judgeCount_label_ui[i] = Label::createWithTTF(Judge::JUDGE_STR[i], UI_LABEL_SYSTEM_FONT, UI_LABEL_SYSTEM_FONTSIZE,
-			Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
-		judgeCount_label_ui[i]->setPosition(size_window.width / 8, maxCombo_label->getPositionY() - ((i + 1) * 30));
+			Size(150,50), TextHAlignment::LEFT, TextVAlignment::CENTER);
+		judgeCount_label_ui[i]->setPosition(size_window.width / 4, maxCombo_label->getPositionY() - ((i + 1) * 30));
 		rectBackground_sprite->addChild(judgeCount_label_ui[i]);
 
-		judgeCount_label[i] = Label::createWithTTF(": " + std::to_string(score.getjudgeCount(i)), UI_LABEL_SYSTEM_FONT, UI_LABEL_SYSTEM_FONTSIZE,
+		judgeCount_label[i] = Label::createWithTTF(":   " + std::to_string(score.getjudgeCount(i)), UI_LABEL_SYSTEM_FONT, UI_LABEL_SYSTEM_FONTSIZE,
 			Size(150, 50), TextHAlignment::LEFT, TextVAlignment::CENTER);
-		judgeCount_label[i]->setPosition(size_window.width / 8 + 100, maxCombo_label->getPositionY() - ((i + 1) * 30));
+		judgeCount_label[i]->setPosition(size_window.width / 4 + 150, maxCombo_label->getPositionY() - ((i + 1) * 30));
 		rectBackground_sprite->addChild(judgeCount_label[i]);
 
 		i++;
@@ -241,4 +242,15 @@ void ResultScene::enableKeySetting() {
 	key_listener->onKeyPressed = CC_CALLBACK_2(ResultScene::onKeyPressed, this);
 	key_listener->onKeyReleased = CC_CALLBACK_2(ResultScene::onKeyReleased, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(key_listener, this);
+}
+
+/* Enter 키 눌렀을 때 동작 */
+void ResultScene::enterOperate() {
+
+	/* 재시작, 등 여러 선택지 만들어야 함 */
+	
+	/* 임시 - 돌아가기 */
+	auto musicSelectScene = MusicSelectScene::createScene();
+	Director::getInstance()->replaceScene(TransitionFade::create(0.5f, musicSelectScene));
+
 }
