@@ -6,7 +6,7 @@
 
 
 
-#### Made by
+### Made by
 
 - NAME : ¡§±Ÿ»≠ (Jung  Keunhwa)
 
@@ -16,7 +16,7 @@
 
 
 
-#### About BMS(Be-Music Script)
+### About BMS(Be-Music Script)
 
 - [BMS Namu-wiki]([https://namu.wiki/w/Be-Music%20Script](https://namu.wiki/w/Be-Music Script))  
 
@@ -28,7 +28,7 @@
 
 
 
-#### About DJ Technician
+### About DJ Technician
 
 - The game using extracted rhythm data parsed from .bms file
 - Youtube link : https://youtu.be/kJ6VwL5-S5A
@@ -41,7 +41,7 @@
 
 
 
-#### Environment
+### Environment
 
 - Platform : Win32
 - Language : c++
