@@ -1,14 +1,13 @@
-## DJ Technician
+# DJ Technician
 
 #### Rhythm game parsing BMS extension
 
-##### BMS ÆÄ½Ì ±â¹Ý ¸®µë°ÔÀÓ
+##### BMS íŒŒì‹± ê¸°ë°˜ ë¦¬ë“¬ê²Œìž„
 
 
+## Made by
 
-### Made by
-
-- NAME : Á¤±ÙÈ­ (Jung  Keunhwa)
+- NAME : ì •ê·¼í™” (Jung  Keunhwa)
 
 - EMAIL : rmsghk4254@naver.com
 
@@ -16,9 +15,9 @@
 
 
 
-### About BMS(Be-Music Script)
+## About BMS(Be-Music Script)
 
-- [BMS Namu-wiki]([https://namu.wiki/w/Be-Music%20Script](https://namu.wiki/w/Be-Music Script))  
+- [BMS Namu-wiki](https://namu.wiki/w/Be-Music%20Script)  
 
 - [BMS Reference](https://hitkey.nekokan.dyndns.info/cmds.htm)
 
@@ -28,7 +27,7 @@
 
 
 
-### About DJ Technician
+## About DJ Technician
 
 - The game using extracted rhythm data parsed from .bms file
 - Youtube link : https://youtu.be/kJ6VwL5-S5A
@@ -41,7 +40,7 @@
 
 
 
-### Environment
+## Environment
 
 - Platform : Win32
 - Language : c++
